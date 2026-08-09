@@ -9,7 +9,7 @@ Personal collection of portable [Agent Skills](https://agentskills.io). Every sk
 |---|---|
 | [appscript](skills/appscript/SKILL.md) | Google Apps Script(GAS, V8 런타임) 한국어 레퍼런스 — Sheets/Gmail/Drive/Calendar/Docs/Slides/Forms 자동화, 트리거, 웹앱(doGet/doPost), OAuth scope, quota, clasp/TypeScript, 매니페스트(appsscript.json), 6분 제한 회피 등 50여 개 문서를 라우팅 표로 필요한 부분만 읽어 답한다. |
 | [commit-semantic](skills/commit-semantic/SKILL.md) | Analyze uncommitted changes and create semantic commits — group changes into meaningful units (feat/fix/refactor/docs/test/chore) and commit them in dependency order. |
-| [grilling](skills/grilling/SKILL.md) | Grill the user relentlessly about a plan, decision, or idea until nothing is left silently assumed. |
+| [grilling](skills/grilling/SKILL.md) | Grill the user relentlessly about a plan, decision, or idea. |
 | [internalize](skills/internalize/SKILL.md) | Sync the user's mental model with the codebase through retrieval practice — quiz first, reveal gaps, then correct. |
 <!-- END:catalog -->
 
@@ -51,6 +51,7 @@ plugin.json                  # Agent Plugins v1 manifest (agent-plugins.org)
 .claude-plugin/plugin.json   # plugin manifest (Claude Code format, also read by Codex/Copilot/Cursor)
 .claude-plugin/marketplace.json
 skills/<name>/SKILL.md       # one shared skills tree, agentskills.io spec
+.claude/skills/              # repo-local skills (not published with the plugin)
 scripts/                     # repo maintenance (see below)
 .githooks/pre-push           # runs scripts/check.sh before every push
 ```
@@ -68,6 +69,7 @@ scripts/check.sh           # all checks: spec-purity lint, README sync, version 
 scripts/lint-skills.sh     # fail if any SKILL.md strays from the Agent Skills spec
 scripts/gen-readme.sh      # regenerate the skills table above from SKILL.md frontmatter (--check to verify)
 scripts/bump-version.sh    # bump the version across all three manifests (patch|minor|major)
+scripts/fetch-docs.sh      # fetch the Claude Code docs mirror (.claude/docs/, gitignored) for the local claude-code-guide skill
 scripts/install-hooks.sh   # once per clone: enable the pre-push gate
 ```
 

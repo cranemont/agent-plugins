@@ -11,6 +11,10 @@
 # Logs
 *.log
 
+# Claude docs mirror for the repo-local claude-code-guide skill — fetched per
+# machine via scripts/fetch-docs.sh, not redistributed through this public repo
+.claude/docs/
+
 # appscript-docs maintenance artifacts (scripts/appscript-docs/)
 # .snapshots/ = check-updates.sh baseline (local-only), link-report.md = check-links.sh report
 .snapshots/
