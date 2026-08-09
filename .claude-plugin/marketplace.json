@@ -1,0 +1,29 @@
+{
+  "name": "agent-plugins",
+  "owner": {
+    "name": "cranemont"
+  },
+  "metadata": {
+    "description": "Personal cross-agent plugin marketplace",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "agent-plugins",
+      "source": "./",
+      "description": "Personal cross-agent skill collection: grill/stress-test plans and decisions before acting.",
+      "version": "0.1.0",
+      "author": {
+        "name": "cranemont"
+      },
+      "keywords": [
+        "skills",
+        "workflow",
+        "planning",
+        "decision-making",
+        "grilling"
+      ],
+      "category": "workflow"
+    }
+  ]
+}

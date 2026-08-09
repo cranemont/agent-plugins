@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+# Gate pushes on scripts/check.sh (spec lint, README sync, version lockstep).
+# This hook only checks — it never edits. Enable with: scripts/install-hooks.sh
+set -euo pipefail
+repo="$(git rev-parse --show-toplevel)"
+
+if ! "$repo/scripts/check.sh"; then
+  echo "" >&2
+  echo "pre-push: checks failed — fix the issues above, commit, and push again." >&2
+  echo "  README stale?  scripts/gen-readme.sh && git add README.md" >&2
+  exit 1
+fi

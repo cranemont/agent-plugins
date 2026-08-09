@@ -1,0 +1,17 @@
+# IDE
+.idea
+.vscode
+
+# OS
+.DS_Store
+
+# Claude Code local settings (user-specific)
+.claude/settings.local.json
+
+# Logs
+*.log
+
+# appscript-docs maintenance artifacts (scripts/appscript-docs/)
+# .snapshots/ = check-updates.sh baseline (local-only), link-report.md = check-links.sh report
+.snapshots/
+link-report.md

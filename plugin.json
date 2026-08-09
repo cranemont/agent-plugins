@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "agent-plugins",
+  "version": "0.1.0",
+  "description": "Personal cross-agent skill collection: grill/stress-test plans and decisions before acting.",
+  "author": {
+    "name": "cranemont"
+  },
+  "license": "MIT",
+  "keywords": [
+    "skills",
+    "workflow",
+    "planning",
+    "decision-making"
+  ]
+}
