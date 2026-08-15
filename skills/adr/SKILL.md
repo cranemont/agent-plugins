@@ -75,7 +75,7 @@ docs/adr/가 있는 레포에서 아키텍처에 닿는 작업(구조 변경, �
 
 1. 새 ADR을 new 절차로 작성. frontmatter에 `supersedes: adr-NNNN`, 리드에 무엇을 왜 대체하는지 명시.
 2. 옛 ADR frontmatter에 `superseded_by: adr-MMMM` 한 줄 추가 — 허용된 유일한 사후 변이. 본문은 건드리지 않는다.
-3. **부분 번복**(옛 결정의 일부 조항만 뒤집을 때): 옛 파일엔 `amended_by: adr-MMMM`, 새 ADR 리드에 blockquote로 범위 선언 — "adr-NNNN의 결정 중 X만 번복한다. 나머지는 유효."
+3. **부분 번복**(옛 결정의 일부 조항만 뒤집을 때): 옛 파일엔 `amended_by: adr-MMMM` — **누적되므로 덮어쓰지 말고 공백으로 이어 붙인다**(`amended_by: adr-MMMM adr-NNNN`, 번호순), 새 ADR 리드에 blockquote로 범위 선언 — "adr-NNNN의 결정 중 X만 번복한다. 나머지는 유효."
 4. `scripts/adr.sh check` (인덱스 검증 포함).
 
 ## init — 레포 부트스트랩

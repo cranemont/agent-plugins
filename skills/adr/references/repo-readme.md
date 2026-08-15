@@ -15,7 +15,7 @@
 - 파일명 `NNNN-english-kebab.md` (4자리 순차, 재사용 금지), 본문 한국어
 - 섹션: 맥락 → 결정 → 기각한 대안(사유 필수) → 결과(감수하는 것 필수) → 보류(선택)
 - frontmatter는 `id`·`created`(+ 새 ADR의 `supersedes`)만. **status류 현재시제 필드 금지** — 현행 여부는 `superseded_by` 부재로 파생된다
-- **생성 후 수정 금지** (오타·깨진 링크 예외). 번복하려면 새 ADR을 쓰고 옛 파일 frontmatter에 `superseded_by: adr-NNNN` 한 줄만 추가한다. 일부 조항만 뒤집으면 `amended_by`
+- **생성 후 수정 금지** (오타·깨진 링크 예외). 번복하려면 새 ADR을 쓰고 옛 파일 frontmatter에 `superseded_by: adr-NNNN` 한 줄만 추가한다. 일부 조항만 뒤집으면 `amended_by`. **`amended_by`는 공백으로 구분된 여럿을 받는다**(번호순) — 부분 번복은 누적되므로 덮어쓰지 말 것. `superseded_by`·`supersedes`는 단일값이다
 - 번복은 코드보다 먼저 — 실행 전에 ADR부터 쓴다
 
 ## 목록

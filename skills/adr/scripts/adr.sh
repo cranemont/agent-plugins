@@ -80,7 +80,7 @@ cmd_index() {
   {
     echo '| # | 제목 | 상태 | 날짜 |'
     echo '|---|---|---|---|'
-    local f base num title created sb ab state ref
+    local f base num title created sb ab state ref links one
     for f in $(adr_files); do
       base=$(basename "$f")
       num=${base%%-*}
@@ -91,7 +91,14 @@ cmd_index() {
       if [ -n "$sb" ]; then
         ref=$(id_to_file "$sb"); state="[$sb](${ref:-#})로 대체됨"
       elif [ -n "$ab" ]; then
-        ref=$(id_to_file "$ab"); state="현행 · [$ab](${ref:-#})로 일부 번복"
+        # amended_by는 다중값이다. 공백·쉼표로 갈라 전부 링크한다 —
+        # 하나만 남기면 나중에 부분 번복이 하나 더 붙을 때 앞엣것이 조용히 지워진다.
+        links=''
+        for one in $(echo "$ab" | tr ',' ' '); do
+          ref=$(id_to_file "$one")
+          links="${links:+$links · }[$one](${ref:-#})"
+        done
+        state="현행 · ${links}로 일부 번복"
       else
         state='현행'
       fi
@@ -143,9 +150,17 @@ cmd_check() {
     for sec in '## 맥락' '## 결정' '## 기각한 대안' '## 결과'; do
       grep -q "^$sec" "$f" || err "필수 절 없음: $sec"
     done
-    for v in supersedes superseded_by amended_by; do
-      v=$(fm_value "$f" "$v")
-      [ -z "$v" ] || [ -n "$(id_to_file "$v")" ] || err "참조 대상 파일이 없다: $v"
+    for k in supersedes superseded_by amended_by; do
+      v=$(fm_value "$f" "$k")
+      [ -z "$v" ] && continue
+      for one in $(echo "$v" | tr ',' ' '); do
+        [ -n "$(id_to_file "$one")" ] || err "참조 대상 파일이 없다: $one"
+      done
+      # 다중값은 amended_by에만 허용한다 — 대체는 정의상 하나다.
+      if [ "$k" != amended_by ]; then
+        [ "$(echo "$v" | tr ',' ' ' | wc -w | tr -d ' ')" -eq 1 ] \
+          || err "$k 는 단일 값이어야 한다: $v"
+      fi
     done
   done
   base=''
