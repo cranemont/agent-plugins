@@ -11,7 +11,7 @@
     {
       "name": "agent-plugins",
       "source": "./",
-      "description": "Personal cross-agent skill collection: grill/stress-test plans and decisions before acting.",
+      "description": "Personal cross-agent skill collection: ADR decision records, semantic commits, plan grilling, codebase internalization, plain Korean prose, and a Google Apps Script reference.",
       "version": "0.2.0",
       "author": {
         "name": "cranemont"
@@ -19,9 +19,14 @@
       "keywords": [
         "skills",
         "workflow",
-        "planning",
         "decision-making",
-        "grilling"
+        "adr",
+        "git",
+        "commit-conventions",
+        "korean",
+        "writing-style",
+        "apps-script",
+        "learning"
       ],
       "category": "workflow"
     }
