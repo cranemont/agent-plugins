@@ -1,6 +1,6 @@
 {
   "name": "agent-plugins",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Personal cross-agent skill collection: grill/stress-test plans and decisions before acting.",
   "author": {
     "name": "cranemont"
