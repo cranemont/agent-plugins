@@ -12,6 +12,7 @@ Personal collection of portable [Agent Skills](https://agentskills.io). Every sk
 | [commit-semantic](skills/commit-semantic/SKILL.md) | Analyze uncommitted changes and create semantic commits — group changes into meaningful units (feat/fix/refactor/docs/test/chore) and commit them in dependency order. |
 | [grilling](skills/grilling/SKILL.md) | Grill the user relentlessly about a plan, decision, or idea. |
 | [internalize](skills/internalize/SKILL.md) | Sync the user's mental model with the codebase through retrieval practice — quiz first, reveal gaps, then correct. |
+| [plain-korean](skills/plain-korean/SKILL.md) | 한국어 산문 스타일 — 장엄체·비유·AI 서식 습관·번역투를 빼고 파일 경로·수치·재현 조건은 남긴다(사용자 보고·UI 문구·코드 주석·커밋 메시지·저장소 문서·이슈와 PR 설명). |
 <!-- END:catalog -->
 
 ## Install
@@ -62,6 +63,7 @@ scripts/                     # repo maintenance (see below)
 - **grilling** — adapted from [Matt Pocock's grilling skill](https://github.com/mattpocock/skills/blob/main/skills/productivity/grilling/SKILL.md) ([mattpocock/skills](https://github.com/mattpocock/skills), MIT). This copy is maintained independently and is expected to diverge.
 - **internalize** — methodology grounded in the learning-science research cited in [skills/internalize/references/research.md](skills/internalize/references/research.md).
 - **appscript** — every reference doc cites its official Google documentation sources inline (`> 출처` blocks); maintained with the toolchain in `scripts/appscript-docs/`.
+- **plain-korean** — the rules and their evidence are kept apart. [skills/plain-korean/references/research.md](skills/plain-korean/references/research.md) records which style guide was followed where two disagree, and which popular "AI writing tells" were measured and deliberately not turned into rules.
 
 ## Maintenance
 
