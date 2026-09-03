@@ -12,7 +12,7 @@ Personal collection of portable [Agent Skills](https://agentskills.io). Every sk
 | [commit-semantic](skills/commit-semantic/SKILL.md) | Analyze uncommitted changes and create semantic commits — group changes into meaningful units (feat/fix/refactor/docs/test/chore) and commit them in dependency order. |
 | [grilling](skills/grilling/SKILL.md) | Grill the user relentlessly about a plan, decision, or idea. |
 | [internalize](skills/internalize/SKILL.md) | Sync the user's mental model with the codebase through retrieval practice — quiz first, reveal gaps, then correct. |
-| [plain-korean](skills/plain-korean/SKILL.md) | 한국어 산문 스타일 — 장엄체·비유·AI 서식 습관·번역투를 빼고 파일 경로·수치·재현 조건은 남긴다(사용자 보고·UI 문구·코드 주석·커밋 메시지·저장소 문서·이슈와 PR 설명). |
+| [plain-korean](skills/plain-korean/SKILL.md) | 기능 구현이나 문서 작업 중 사용자에게 보이는 한국어 제품 문구 또는 저장소에 남는 한국어 기술 산문을 작성·번역·수정할 때 자연스럽고 간결하게 다듬는다. |
 <!-- END:catalog -->
 
 ## Install
