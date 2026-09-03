@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "agent-plugins",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Personal cross-agent skill collection: ADR decision records, semantic commits, plan grilling, codebase internalization, plain Korean prose, and a Google Apps Script reference.",
   "author": {
     "name": "cranemont"

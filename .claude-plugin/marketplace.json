@@ -12,7 +12,7 @@
       "name": "agent-plugins",
       "source": "./",
       "description": "Personal cross-agent skill collection: ADR decision records, semantic commits, plan grilling, codebase internalization, plain Korean prose, and a Google Apps Script reference.",
-      "version": "0.2.0",
+      "version": "0.2.1",
       "author": {
         "name": "cranemont"
       },
