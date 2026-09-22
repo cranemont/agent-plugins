@@ -1,7 +1,7 @@
 {
   "name": "writing",
-  "version": "0.3.0",
-  "description": "Korean prose style: make Korean UI copy and technical prose natural and concise without changing facts, identifiers, or tone.",
+  "version": "0.4.0",
+  "description": "Korean prose style: make Korean UI copy and technical prose natural and concise without changing facts, identifiers, or tone, and review prose against ASD-STE100 (Simplified Technical English) rules.",
   "author": {
     "name": "cranemont"
   },
@@ -10,6 +10,9 @@
     "korean",
     "writing-style",
     "technical-writing",
-    "ui-copy"
+    "ui-copy",
+    "ste",
+    "simplified-technical-english",
+    "proofreading"
   ]
 }

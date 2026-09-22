@@ -15,6 +15,7 @@ The skills ship as small plugins, one per function. Install only the plugins you
 | [thinking-tools](plugins/thinking-tools) | [grilling](plugins/thinking-tools/skills/grilling/SKILL.md) | Grill the user relentlessly about a plan, decision, or idea. |
 | [thinking-tools](plugins/thinking-tools) | [internalize](plugins/thinking-tools/skills/internalize/SKILL.md) | Sync the user's mental model with the codebase through retrieval practice — quiz first, reveal gaps, then correct. |
 | [writing](plugins/writing) | [plain-korean](plugins/writing/skills/plain-korean/SKILL.md) | 기능 구현이나 문서 작업 중 사용자에게 보이는 한국어 제품 문구 또는 저장소에 남는 한국어 기술 산문을 작성·번역·수정할 때 자연스럽고 간결하게 다듬는다. |
+| [writing](plugins/writing) | [prose-check](plugins/writing/skills/prose-check/SKILL.md) | Review human-readable prose against ASD-STE100 (Simplified Technical English) and report findings with rule tags and concrete rewrites. |
 <!-- END:catalog -->
 
 ## Install
@@ -70,6 +71,7 @@ scripts/                                   # repo maintenance (see below)
 - **internalize** — methodology grounded in the learning-science research cited in [references/research.md](plugins/thinking-tools/skills/internalize/references/research.md).
 - **appscript** — every reference doc cites its official Google documentation sources inline (`> 출처` blocks); maintained with the toolchain in `scripts/appscript-docs/`.
 - **plain-korean** — the rules and their evidence are kept apart. [references/research.md](plugins/writing/skills/plain-korean/references/research.md) records which style guide was followed where two disagree, and which popular "AI writing tells" were measured and deliberately not turned into rules.
+- **prose-check** — Korean rules adapt ASD-STE100 Issue 9 at about 80%, and English text follows STE as written. [references/research.md](plugins/writing/skills/prose-check/references/research.md) gives the source of each rule. The checker's tests and word-list measurements are in `scripts/prose-check/`.
 
 ## Maintenance
 
