@@ -38,8 +38,33 @@ fm_value() {
   ' "$1"
 }
 
+# H1에서 제목만 뽑는다. frontmatter 안의 YAML 주석(# …)은 건너뛴다 — MADR 템플릿에 있다.
+# 레거시 H1(`# 3. 제목`, `# 제목`)도 받는다.
 adr_title() {
-  awk '/^# / { sub(/^# ADR-[0-9]+:[[:space:]]*/, ""); print; exit }' "$1"
+  awk '
+    NR == 1 && /^---[[:space:]]*$/ { infm = 1; next }
+    infm { if (/^---[[:space:]]*$/) infm = 0; next }
+    /^# / {
+      sub(/^#[[:space:]]+/, "")
+      if (!sub(/^ADR-[0-9]+:[[:space:]]*/, "")) sub(/^[0-9]+\.[[:space:]]+/, "")
+      print; exit
+    }
+  ' "$1"
+}
+
+# 캐논 시작 번호: frontmatter id가 adr-<번호>와 맞는 첫 파일.
+# 이보다 앞 번호는 adopt 이전의 레거시다 — 불변이라 캐논에 맞춰 고칠 수 없다.
+canon_start() {
+  local f num
+  for f in $(adr_files); do
+    num=$(basename "$f"); num=${num%%-*}
+    if [ "$(fm_value "$f" id)" = "adr-$num" ]; then echo "$num"; return 0; fi
+  done
+  return 0
+}
+
+is_legacy() { # $1 = 번호, $2 = 캐논 시작 번호 (없으면 레거시도 없다)
+  [ -n "$2" ] && [ $((10#$1)) -lt $((10#$2)) ]
 }
 
 id_to_file() { # adr-0012 → 0012-slug.md (basename, 없으면 빈 값)
@@ -80,14 +105,29 @@ cmd_index() {
   {
     echo '| # | 제목 | 상태 | 날짜 |'
     echo '|---|---|---|---|'
-    local f base num title created sb ab state ref links one
+    local f v base num title created sb ab state ref links one cs pairs cur
+    cs=$(canon_start)
+    # 레거시는 superseded_by를 받지 않는다 — 대체 관계를 새 ADR의 supersedes에서 거꾸로 찾는다.
+    pairs=''
+    if [ -n "$cs" ]; then
+      pairs=$(for f in $(adr_files); do
+        v=$(fm_value "$f" supersedes)
+        [ -z "$v" ] || echo "$v $(fm_value "$f" id)"
+      done)
+    fi
     for f in $(adr_files); do
       base=$(basename "$f")
       num=${base%%-*}
       title=$(adr_title "$f" | sed 's/|/\\|/g')
+      if [ -z "$title" ]; then title=${base#*-}; title=${title%.md}; fi
       created=$(fm_value "$f" created)
       sb=$(fm_value "$f" superseded_by)
       ab=$(fm_value "$f" amended_by)
+      cur='현행'
+      if is_legacy "$num" "$cs"; then
+        cur='레거시'
+        [ -n "$sb" ] || sb=$(printf '%s\n' "$pairs" | awk -v t="adr-$num" '$1 == t { print $2; exit }')
+      fi
       if [ -n "$sb" ]; then
         ref=$(id_to_file "$sb"); state="[$sb](${ref:-#})로 대체됨"
       elif [ -n "$ab" ]; then
@@ -98,9 +138,9 @@ cmd_index() {
           ref=$(id_to_file "$one")
           links="${links:+$links · }[$one](${ref:-#})"
         done
-        state="현행 · ${links}로 일부 번복"
+        state="$cur · ${links}로 일부 번복"
       else
-        state='현행'
+        state=$cur
       fi
       echo "| [$num]($base) | $title | $state | $created |"
     done
@@ -121,16 +161,18 @@ cmd_index() {
 }
 
 cmd_check() {
-  local errors=0 files f base num v sec dup
+  local errors=0 files f base num v sec dup cs legacy=0
   files=$(adr_files)
   if [ -z "$files" ]; then echo "check: ADR 없음 ($adr_dir)"; return 0; fi
   err() { echo "error: ${base:-$adr_dir} — $1" >&2; errors=$((errors + 1)); }
   base=''
   dup=$(printf '%s\n' $files | awk -F/ '{ print substr($NF, 1, 4) }' | sort | uniq -d)
   [ -z "$dup" ] || err "번호 중복: $(echo $dup)"
+  cs=$(canon_start)
   for f in $files; do
     base=$(basename "$f")
     num=${base%%-*}
+    if is_legacy "$num" "$cs"; then legacy=$((legacy + 1)); continue; fi
     printf '%s' "$base" | grep -Eq '^[0-9]{4}-[a-z0-9]+(-[a-z0-9]+)*\.md$' \
       || err "파일명이 NNNN-english-kebab.md 형식이 아니다"
     [ "$(head -1 "$f")" = "---" ] || err "frontmatter가 없다"
@@ -164,6 +206,7 @@ cmd_check() {
     done
   done
   base=''
+  [ "$legacy" -eq 0 ] || echo "check: 레거시 ${legacy}건 (adr-$cs 앞 번호) — 캐논 검사 제외"
   if [ -f "$readme" ]; then cmd_index --check || errors=$((errors + 1)); fi
   if [ "$errors" -eq 0 ]; then echo "check: OK"; else echo "check: ${errors}건 실패" >&2; exit 1; fi
 }

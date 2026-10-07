@@ -78,6 +78,8 @@ docs/adr/가 있는 레포에서 아키텍처에 닿는 작업(구조 변경, �
 3. **부분 번복**(옛 결정의 일부 조항만 뒤집을 때): 옛 파일엔 `amended_by: adr-MMMM` — **누적되므로 덮어쓰지 말고 공백으로 이어 붙인다**(`amended_by: adr-MMMM adr-NNNN`, 번호순), 새 ADR 리드에 blockquote로 범위 선언 — "adr-NNNN의 결정 중 X만 번복한다. 나머지는 유효."
 4. `scripts/adr.sh check` (인덱스 검증 포함).
 
+옛 ADR이 [레거시](#adopt--기존-레포-전환)면 2·3단계를 건너뛴다. 레거시 파일은 frontmatter도 고치지 않는다.
+
 ## init — 레포 부트스트랩
 
 1. `docs/adr/`를 만들고 `README.md`를 [references/repo-readme.md](references/repo-readme.md) 내용으로 생성.
@@ -94,6 +96,8 @@ docs/adr/가 있는 레포에서 아키텍처에 닿는 작업(구조 변경, �
 3. 번호: 기존이 `NNNN-`이면 이어서 쓴다. 날짜식(`YYYYMMDD-`)이면 그대로 두고 0001부터 시작 — 파일명 패턴이 달라 충돌하지 않는다.
 4. 기존 파일의 status 필드는 제거하지 않는다 (불변). 신규부터 캐논 적용.
 5. 전환 결정 자체를 첫 캐논 ADR로 기록하고, init 3단계(CLAUDE.md 블록)를 수행한다.
+6. 기존 파일이 `docs/adr/`에 있으면 레거시 범위는 파생된다. `adr.sh`는 frontmatter `id`가 `adr-<번호>`와 맞는 첫 파일을 캐논의 시작으로 본다. 그보다 앞 번호가 레거시다 — `check`는 검사하지 않고, 인덱스는 상태 칸에 `레거시`로 표시한다. 그래서 전환 ADR은 반드시 `adr.sh new`로 만든다.
+7. 레거시를 번복할 때는 새 ADR에 `supersedes`만 쓴다. 인덱스는 새 ADR의 `supersedes`를 보고 레거시 행에 "대체됨"을 표시한다. 일부만 번복하면 새 ADR 리드의 blockquote가 유일한 기록이다.
 
 ## 흔한 실수
 
