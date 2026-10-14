@@ -12,7 +12,7 @@
 #   <!-- BEGIN:auto-tree -->     ~ <!-- END:auto-tree -->
 #
 # 마커 외 영역(헤더, 라우팅 표, 출처 정책 등)은 수동 관리이므로 건드리지 않음.
-# 대상 문서: skills/appscript/docs/ (APPSCRIPT_DOCS_DIR로 오버라이드 가능).
+# 대상 문서: plugins/appscript/skills/appscript/docs/ (APPSCRIPT_DOCS_DIR로 오버라이드 가능).
 
 set -euo pipefail
 
@@ -77,7 +77,7 @@ build_sections() {
 #  docs 트리에는 표기하지 않는다.)
 build_tree() {
   printf '```\n'
-  printf 'skills/appscript/docs/\n'
+  printf 'plugins/appscript/skills/appscript/docs/\n'
   printf '├── TOC.md\n'
   local last_idx=$((${#SECTIONS[@]} - 1))
   for i in "${!SECTIONS[@]}"; do

@@ -1,0 +1,15 @@
+{
+  "name": "writing",
+  "version": "0.3.0",
+  "description": "Korean prose style: make Korean UI copy and technical prose natural and concise without changing facts, identifiers, or tone.",
+  "author": {
+    "name": "cranemont"
+  },
+  "license": "MIT",
+  "keywords": [
+    "korean",
+    "writing-style",
+    "technical-writing",
+    "ui-copy"
+  ]
+}

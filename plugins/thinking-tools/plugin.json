@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "thinking-tools",
+  "version": "0.3.0",
+  "description": "Interactive sessions that test your thinking: grill a plan or decision before you act, and internalize a codebase through retrieval-practice quizzes.",
+  "author": {
+    "name": "cranemont"
+  },
+  "license": "MIT",
+  "keywords": [
+    "decision-making",
+    "grilling",
+    "learning",
+    "mental-model"
+  ]
+}

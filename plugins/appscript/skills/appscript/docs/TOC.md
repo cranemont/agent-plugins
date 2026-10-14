@@ -162,7 +162,7 @@
 
 <!-- BEGIN:auto-tree -->
 ```
-skills/appscript/docs/
+plugins/appscript/skills/appscript/docs/
 ├── TOC.md
 ├── 01-overview/           (5)
 ├── 02-services/           (21)
@@ -280,9 +280,9 @@ skills/appscript/docs/
 
 ## 유지보수
 
-이 문서 세트는 claude-plugins **저장소 루트**에서 관리합니다. 유지보수 스크립트는
+이 문서 세트는 이 저장소(agent-plugins) **루트**에서 관리합니다. 유지보수 스크립트는
 `scripts/appscript-docs/` 에 있고, 재작성(LLM)은 `.claude/skills/appscript-docs-regen`
-스킬로 처리합니다. 자세한 내용은 [scripts/appscript-docs/README.md](../../../scripts/appscript-docs/README.md).
+스킬로 처리합니다. 자세한 내용은 [scripts/appscript-docs/README.md](../../../../../scripts/appscript-docs/README.md).
 
 ```bash
 # 저장소 루트에서 실행

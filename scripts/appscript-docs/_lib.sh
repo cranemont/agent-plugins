@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # 공통 라이브러리 — appscript-docs 유지보수 스크립트에서 source 해서 사용.
 #
-# 이 툴체인은 claude-plugins 저장소 "루트"에서 skills/appscript/docs/ 를
+# 이 툴체인은 저장소 "루트"에서 plugins/appscript/skills/appscript/docs/ 를
 # 대상으로 동작한다 (플러그인 안에 붙지 않는다).
 #
 # 문서 "재생성"처럼 Claude(LLM)가 필요한 작업은 `claude` CLI 를 직접 호출하지
@@ -25,7 +25,7 @@ err()  { printf '%s[✗]%s %s\n' "$C_RED"   "$C_RESET" "$*" >&2; }
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 # 관리 대상 문서 디렉토리. 환경변수로 오버라이드 가능.
-DOCS_DIR="${APPSCRIPT_DOCS_DIR:-$REPO_ROOT/skills/appscript/docs}"
+DOCS_DIR="${APPSCRIPT_DOCS_DIR:-$REPO_ROOT/plugins/appscript/skills/appscript/docs}"
 
 # 변경 감지 baseline 저장 위치. 플러그인 배포물에 섞이지 않도록 저장소 루트 밑
 # (.gitignore 처리)에 둔다. 환경변수로 오버라이드 가능.

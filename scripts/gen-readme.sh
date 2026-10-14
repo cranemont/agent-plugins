@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Regenerate (or check) the auto-managed skills table in README.md.
+# Regenerate (or check) the auto-managed catalog table in README.md.
 #
-# Source of truth: skills/*/SKILL.md frontmatter. Each row is the skill name
-# (linked) plus the first sentence of its description, so the README can never
-# drift from what the agents actually read. Only the text between the
-# <!-- BEGIN:catalog --> ... <!-- END:catalog --> markers is touched.
+# Source of truth: plugins/*/skills/*/SKILL.md frontmatter. Each row is the
+# plugin, the skill name (linked), and the first sentence of its description,
+# so the README can never drift from what the agents actually read. Only the
+# text between the <!-- BEGIN:catalog --> ... <!-- END:catalog --> markers is
+# touched.
 #
 #   scripts/gen-readme.sh            rewrite README.md in place (default)
 #   scripts/gen-readme.sh --check    exit 1 (+ diff) if README.md is out of sync
@@ -17,21 +18,23 @@ MODE="${1:---write}"
 die() { echo "gen-readme: error: $*" >&2; exit 2; }
 
 rows() {
-  local d name desc
-  for d in "$ROOT/skills"/*/; do
+  local d plugin name rel desc
+  for d in "$ROOT/plugins"/*/skills/*/; do
     [ -f "${d}SKILL.md" ] || continue
     name="$(basename "$d")"
+    plugin="$(basename "$(dirname "$(dirname "$d")")")"
+    rel="plugins/$plugin/skills/$name"
     desc="$(awk '/^---$/{n++; next} n==1{print} n>1{exit}' "${d}SKILL.md" \
             | sed -n 's/^description:[[:space:]]*//p')"
-    [ -n "$desc" ] || die "skills/$name/SKILL.md has no description"
+    [ -n "$desc" ] || die "$rel/SKILL.md has no description"
     desc="$(printf '%s' "$desc" | sed -e 's/\([.!?]\) .*/\1/' -e 's/|/\\|/g')"
-    printf '| [%s](skills/%s/SKILL.md) | %s |\n' "$name" "$name" "$desc"
+    printf '| [%s](plugins/%s) | [%s](%s/SKILL.md) | %s |\n' "$plugin" "$plugin" "$name" "$rel" "$desc"
   done
 }
 
 TMP="$(mktemp)"
 trap 'rm -f "$TMP"' EXIT
-{ echo '| Skill | Description |'; echo '|---|---|'; rows; } > "$TMP"
+{ echo '| Plugin | Skill | Description |'; echo '|---|---|---|'; rows; } > "$TMP"
 
 grep -q '^<!-- BEGIN:catalog' "$README" || die "marker BEGIN:catalog not found in README.md"
 

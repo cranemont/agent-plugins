@@ -1,7 +1,7 @@
 ---
 name: appscript-docs-regen
 description: |
-  skills/appscript/docs/ 의 Google Apps Script 한국어 레퍼런스 문서를 공식 출처 기준으로 재작성한다. `claude` CLI shell-out(옛 regen.sh)을 대체하는 스킬 형태. 대상 문서의 '출처' URL을 WebFetch로 다시 확인해 변경분을 반영하고 '최종 확인일'을 갱신한다.
+  plugins/appscript/skills/appscript/docs/ 의 Google Apps Script 한국어 레퍼런스 문서를 공식 출처 기준으로 재작성한다. `claude` CLI shell-out(옛 regen.sh)을 대체하는 스킬 형태. 대상 문서의 '출처' URL을 WebFetch로 다시 확인해 변경분을 반영하고 '최종 확인일'을 갱신한다.
   사용 시점:
     - `scripts/appscript-docs/check-updates.sh` 가 변경된 출처를 보고한 뒤, 해당 문서를 최신화할 때
     - 사용자가 "앱스크립트 문서 최신화/재생성해줘", "이 doc 공식 문서 기준으로 다시 써줘" 라고 요청할 때
@@ -19,11 +19,11 @@ tools:
 
 # appscript-docs 재생성 스킬
 
-`skills/appscript/docs/` 의 Apps Script 레퍼런스 문서를 **공식 출처를 다시 읽어** 최신 상태로 재작성한다. 예전 `regen.sh`가 `claude` CLI를 shell-out 하던 것을, 세션 안에서 도는 스킬로 옮긴 것이다 — CLI 인증/권한/버전에 흔들리지 않고, 결과를 바로 검토·수정할 수 있다.
+`plugins/appscript/skills/appscript/docs/` 의 Apps Script 레퍼런스 문서를 **공식 출처를 다시 읽어** 최신 상태로 재작성한다. 예전 `regen.sh`가 `claude` CLI를 shell-out 하던 것을, 세션 안에서 도는 스킬로 옮긴 것이다 — CLI 인증/권한/버전에 흔들리지 않고, 결과를 바로 검토·수정할 수 있다.
 
 ## 입력
 
-- **대상 파일**: 재작성할 `.md` 경로 (예: `skills/appscript/docs/02-services/gmail.md`). 여러 개면 하나씩 순차 처리.
+- **대상 파일**: 재작성할 `.md` 경로 (예: `plugins/appscript/skills/appscript/docs/02-services/gmail.md`). 여러 개면 하나씩 순차 처리.
 - 대상이 불명확하면 먼저 변경 감지로 목록을 만든다:
 
 ```bash

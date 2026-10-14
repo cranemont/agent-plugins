@@ -1,0 +1,15 @@
+{
+  "name": "appscript",
+  "version": "0.3.0",
+  "description": "Google Apps Script (V8) reference in Korean: about 50 routed docs on Workspace automation, triggers, web apps, OAuth scopes, quotas, and clasp.",
+  "author": {
+    "name": "cranemont"
+  },
+  "license": "MIT",
+  "keywords": [
+    "apps-script",
+    "google-workspace",
+    "clasp",
+    "documentation"
+  ]
+}

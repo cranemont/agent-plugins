@@ -4,31 +4,88 @@
     "name": "cranemont"
   },
   "metadata": {
-    "description": "Personal cross-agent plugin marketplace",
+    "description": "Personal cross-agent plugin marketplace: one plugin per function, so you can install only the skills you need",
     "version": "1.0.0"
   },
   "plugins": [
     {
-      "name": "agent-plugins",
-      "source": "./",
-      "description": "Personal cross-agent skill collection: ADR decision records, semantic commits, plan grilling, codebase internalization, plain Korean prose, and a Google Apps Script reference.",
-      "version": "0.2.2",
+      "name": "adr",
+      "source": "./plugins/adr",
+      "description": "Architecture Decision Records: record hard-to-reverse decisions as immutable files, derive their status, keep an index, and consult them before architectural work.",
+      "version": "0.3.0",
       "author": {
         "name": "cranemont"
       },
       "keywords": [
-        "skills",
-        "workflow",
-        "decision-making",
         "adr",
-        "git",
-        "commit-conventions",
-        "korean",
-        "writing-style",
-        "apps-script",
-        "learning"
+        "decision-making",
+        "architecture",
+        "documentation"
       ],
       "category": "workflow"
+    },
+    {
+      "name": "appscript",
+      "source": "./plugins/appscript",
+      "description": "Google Apps Script (V8) reference in Korean: about 50 routed docs on Workspace automation, triggers, web apps, OAuth scopes, quotas, and clasp.",
+      "version": "0.3.0",
+      "author": {
+        "name": "cranemont"
+      },
+      "keywords": [
+        "apps-script",
+        "google-workspace",
+        "clasp",
+        "documentation"
+      ],
+      "category": "reference"
+    },
+    {
+      "name": "git-tools",
+      "source": "./plugins/git-tools",
+      "description": "Git workflow: group uncommitted changes into semantic commits in dependency order.",
+      "version": "0.3.0",
+      "author": {
+        "name": "cranemont"
+      },
+      "keywords": [
+        "git",
+        "commit-conventions",
+        "workflow"
+      ],
+      "category": "workflow"
+    },
+    {
+      "name": "thinking-tools",
+      "source": "./plugins/thinking-tools",
+      "description": "Interactive sessions that test your thinking: grill a plan or decision before you act, and internalize a codebase through retrieval-practice quizzes.",
+      "version": "0.3.0",
+      "author": {
+        "name": "cranemont"
+      },
+      "keywords": [
+        "decision-making",
+        "grilling",
+        "learning",
+        "mental-model"
+      ],
+      "category": "workflow"
+    },
+    {
+      "name": "writing",
+      "source": "./plugins/writing",
+      "description": "Korean prose style: make Korean UI copy and technical prose natural and concise without changing facts, identifiers, or tone.",
+      "version": "0.3.0",
+      "author": {
+        "name": "cranemont"
+      },
+      "keywords": [
+        "korean",
+        "writing-style",
+        "technical-writing",
+        "ui-copy"
+      ],
+      "category": "writing"
     }
   ]
 }

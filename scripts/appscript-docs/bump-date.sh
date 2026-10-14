@@ -8,7 +8,7 @@
 #   scripts/appscript-docs/bump-date.sh --date=2026-06-01           # 특정 날짜
 #   scripts/appscript-docs/bump-date.sh --dry-run                   # 변경 미리보기
 #
-# 대상 문서: skills/appscript/docs/ (APPSCRIPT_DOCS_DIR로 오버라이드 가능).
+# 대상 문서: plugins/appscript/skills/appscript/docs/ (APPSCRIPT_DOCS_DIR로 오버라이드 가능).
 # 매치 패턴: '**최종 확인일**: YYYY-MM-DD' / '**최종 갱신**: YYYY-MM-DD' / '최종 검증'
 
 set -euo pipefail

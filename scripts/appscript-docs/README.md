@@ -1,13 +1,13 @@
 # scripts/appscript-docs — Apps Script 문서 유지보수 툴체인
 
-`skills/appscript/docs/` 의 Google Apps Script 한국어 레퍼런스를 **저장소 루트에서** 관리·갱신하는 스크립트 모음. 
+`plugins/appscript/skills/appscript/docs/` 의 Google Apps Script 한국어 레퍼런스를 **저장소 루트에서** 관리·갱신하는 스크립트 모음. 
 
 핵심 원칙:
 - **비-LLM 작업은 스크립트**로 (변경 감지·TOC·링크·날짜). 표준 Unix 도구(`curl`/`awk`/`sed`/`find`)만 사용.
 - **LLM(Claude)이 필요한 문서 재생성은 스킬로** — `.claude/skills/appscript-docs-regen`. (`claude` CLI 를 shell-out 하지 않는다.)
 
 모든 스크립트는 **저장소 루트에서** 실행한다. 대상 문서 디렉토리와 baseline 위치는 환경변수로 오버라이드 가능:
-- `APPSCRIPT_DOCS_DIR` (기본 `skills/appscript/docs`)
+- `APPSCRIPT_DOCS_DIR` (기본 `plugins/appscript/skills/appscript/docs`)
 - `APPSCRIPT_SNAP_DIR` (기본 `.snapshots/appscript-docs`, gitignore됨)
 
 ## 정기 갱신 흐름
@@ -48,5 +48,5 @@ scripts/appscript-docs/check-links.sh
 
 ## 참고
 
-- 대상 문서 스킬: `skills/appscript/SKILL.md`
+- 대상 문서 스킬: `plugins/appscript/skills/appscript/SKILL.md`
 - baseline/백업/리포트는 `.gitignore` 처리됨 (`.snapshots/`, `*.bak`, `link-report.md`).

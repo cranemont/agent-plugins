@@ -13,7 +13,7 @@ agent-plugins는 공개 스킬 컬렉션이고, 스킬의 형태·규약에 대�
 
 ## 결정
 
-되돌리기 비싼 결정은 [skills/adr/SKILL.md](../../skills/adr/SKILL.md)의 캐논에 따라 `docs/adr/`에 기록한다. 사소한 구현 선택은 기록하지 않는다.
+되돌리기 비싼 결정은 [plugins/adr/skills/adr/SKILL.md](../../plugins/adr/skills/adr/SKILL.md)의 캐논에 따라 `docs/adr/`에 기록한다. 사소한 구현 선택은 기록하지 않는다.
 
 ## 기각한 대안
 

@@ -7,7 +7,7 @@
 #   scripts/appscript-docs/check-links.sh 02-services/       # 특정 하위 디렉토리만
 #   scripts/appscript-docs/check-links.sh --report=links.md  # 결과를 markdown으로 저장
 #
-# 대상 문서: skills/appscript/docs/ (APPSCRIPT_DOCS_DIR로 오버라이드 가능).
+# 대상 문서: plugins/appscript/skills/appscript/docs/ (APPSCRIPT_DOCS_DIR로 오버라이드 가능).
 # 출력: 깨진 URL (4xx/5xx 또는 timeout) 목록 + 발견된 파일 위치
 # Exit code: 깨진 링크가 있으면 1
 

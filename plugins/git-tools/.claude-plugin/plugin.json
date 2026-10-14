@@ -1,0 +1,14 @@
+{
+  "name": "git-tools",
+  "version": "0.3.0",
+  "description": "Git workflow: group uncommitted changes into semantic commits in dependency order.",
+  "author": {
+    "name": "cranemont"
+  },
+  "license": "MIT",
+  "keywords": [
+    "git",
+    "commit-conventions",
+    "workflow"
+  ]
+}

@@ -5,7 +5,7 @@ created: 2026-08-09
 
 # ADR-0002: ADR 캐논 — 파생 상태, 순차 번호, 영문 파일명
 
-`adr` 스킬이 모든 레포에 적용할 단일 캐논의 세 축을 확정한다. 실사용 레포 6곳의 규약 수렴·발산 조사와 웹 근거([research.md](../../skills/adr/references/research.md))를 바탕으로 했다.
+`adr` 스킬이 모든 레포에 적용할 단일 캐논의 세 축을 확정한다. 실사용 레포 6곳의 규약 수렴·발산 조사와 웹 근거([research.md](../../plugins/adr/skills/adr/references/research.md))를 바탕으로 했다.
 
 ## 맥락
 

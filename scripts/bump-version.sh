@@ -1,25 +1,30 @@
 #!/usr/bin/env bash
-# Bump the plugin version in lockstep across all three manifests:
-#   plugin.json   .claude-plugin/plugin.json   .claude-plugin/marketplace.json
+# Bump one plugin's version in lockstep across its three manifests:
+#   plugins/<name>/plugin.json   plugins/<name>/.claude-plugin/plugin.json
+#   its entry in .claude-plugin/marketplace.json
 #
-# Usage: scripts/bump-version.sh [major|minor|patch]   (default: patch)
+# Usage: scripts/bump-version.sh <plugin> [major|minor|patch]   (default: patch)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BUMP="${1:-patch}"
+PLUGIN="${1:-}"
+BUMP="${2:-patch}"
 
 die() { echo "bump-version: error: $*" >&2; exit 1; }
 command -v jq >/dev/null 2>&1 || die "jq not found (required)"
+[ -n "$PLUGIN" ] || die "usage: scripts/bump-version.sh <plugin> [major|minor|patch] — plugins: $(ls "$ROOT/plugins" | tr '\n' ' ')"
+[ -d "$ROOT/plugins/$PLUGIN" ] || die "no plugin '$PLUGIN' under plugins/"
 
-SPEC="$ROOT/plugin.json"
-CLAUDE="$ROOT/.claude-plugin/plugin.json"
+SPEC="$ROOT/plugins/$PLUGIN/plugin.json"
+CLAUDE="$ROOT/plugins/$PLUGIN/.claude-plugin/plugin.json"
 MKT="$ROOT/.claude-plugin/marketplace.json"
 
 v1="$(jq -r '.version' "$SPEC")"
 v2="$(jq -r '.version' "$CLAUDE")"
-v3="$(jq -r '.plugins[0].version' "$MKT")"
+v3="$(jq -r --arg p "$PLUGIN" '.plugins[] | select(.name == $p) | .version' "$MKT")"
+[ -n "$v3" ] || die "'$PLUGIN' has no entry in marketplace.json"
 [ "$v1" = "$v2" ] && [ "$v1" = "$v3" ] \
-  || die "manifests disagree before bump (plugin.json=$v1, .claude-plugin/plugin.json=$v2, marketplace.json=$v3) — fix by hand first"
+  || die "$PLUGIN manifests disagree before bump (plugin.json=$v1, .claude-plugin/plugin.json=$v2, marketplace.json=$v3) — fix by hand first"
 
 IFS='.' read -r MAJOR MINOR PATCH <<< "$v1"
 case "$BUMP" in
@@ -34,6 +39,6 @@ tmp="$(mktemp)"
 trap 'rm -f "$tmp"' EXIT
 jq --arg v "$NEW" '.version = $v' "$SPEC" > "$tmp" && cat "$tmp" > "$SPEC"
 jq --arg v "$NEW" '.version = $v' "$CLAUDE" > "$tmp" && cat "$tmp" > "$CLAUDE"
-jq --arg v "$NEW" '.plugins[0].version = $v' "$MKT" > "$tmp" && cat "$tmp" > "$MKT"
+jq --arg p "$PLUGIN" --arg v "$NEW" '(.plugins[] | select(.name == $p) | .version) = $v' "$MKT" > "$tmp" && cat "$tmp" > "$MKT"
 
-echo "bump-version: $v1 -> $NEW (all three manifests)"
+echo "bump-version: $PLUGIN $v1 -> $NEW (all three manifests)"

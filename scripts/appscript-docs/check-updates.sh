@@ -4,7 +4,7 @@
 #
 # 각 .md 파일의 '> **출처**' 블록과 '## 참고' 섹션 URL에 대해 본문 콘텐츠 해시와
 # Last-Modified 헤더를 저장·비교해서 어떤 출처가 바뀌었는지 보고한다. LLM은
-# 호출하지 않는다. 대상 문서: skills/appscript/docs/ (DOCS_DIR).
+# 호출하지 않는다. 대상 문서: plugins/appscript/skills/appscript/docs/ (DOCS_DIR).
 #
 # 일반 흐름 (저장소 루트에서 실행):
 #   1. scripts/appscript-docs/check-updates.sh --init     # 첫 baseline 저장
@@ -23,7 +23,7 @@
 #   --no-color
 #
 # 환경변수:
-#   APPSCRIPT_DOCS_DIR   대상 문서 디렉토리 (기본: skills/appscript/docs)
+#   APPSCRIPT_DOCS_DIR   대상 문서 디렉토리 (기본: plugins/appscript/skills/appscript/docs)
 #   APPSCRIPT_SNAP_DIR   baseline 저장 위치 (기본: .snapshots/appscript-docs)
 #   PARALLEL             동시 fetch 수 (기본 8)
 #   TIMEOUT              URL 당 timeout 초 (기본 20)
