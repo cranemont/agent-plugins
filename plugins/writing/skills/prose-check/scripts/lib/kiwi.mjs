@@ -54,6 +54,9 @@ export function venvPython() {
  * @param {string[]} texts
  * @returns {{model: string, version: string, tokens: [string, string, number, number][][]} | null}
  */
+/** 도우미를 기다리는 최대 시간(ms). 넘으면 실패로 보고, 부르는 쪽이 정규식만으로 계속한다. 제한이 없으면 멈춘 도우미가 검사 전체를 멈춘다 */
+const TIMEOUT_MS = Number(process.env.PROSE_CHECK_KIWI_TIMEOUT_MS) || 300_000;
+
 export function tokenize(texts, model = KIWI_MODEL) {
   const py = venvPython();
   if (!py) return null;
@@ -61,8 +64,10 @@ export function tokenize(texts, model = KIWI_MODEL) {
     input: JSON.stringify({ texts, model }),
     encoding: 'utf8',
     maxBuffer: 1 << 30,
+    timeout: TIMEOUT_MS,
     env: { ...process.env, PYTHONIOENCODING: 'utf-8' },
   });
+  if (r.error?.code === 'ETIMEDOUT') throw new Error(`Kiwi 도우미가 ${TIMEOUT_MS / 1000}초 안에 끝나지 않았다`);
   if (r.status !== 0) throw new Error(`Kiwi 도우미 실패: ${(r.stderr || r.error?.message || '').trim().split('\n').pop()}`);
   return JSON.parse(r.stdout);
 }

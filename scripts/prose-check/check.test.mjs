@@ -13,6 +13,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { venvPython } from '../../plugins/writing/skills/prose-check/scripts/lib/kiwi.mjs';
 
 const CHECK = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../plugins/writing/skills/prose-check/scripts/check.mjs');
 
@@ -103,6 +104,9 @@ test('목적어가 수인 `센다`는 실제로 세는 일이라 후보가 아�
   assert.match(run('분석기가 재고를 센다.\n').out, /주석 말투 · STE 1\.10 {2}를 센다/);
   // 목적어가 수가 아니면 후보로 보고한다. 판정은 korean-patterns.md §6이 한다
   assert.match(run('원본 강의가 없는 챌린지를 센다.\n').out, /를 센다/);
+  // 과거형도 같다
+  assert.match(run('후보를 셌습니다.\n').out, /주석 말투 · STE 1.10 {2}셌습니다/);
+  assert.doesNotMatch(run('문서 수를 셌습니다.\n').out, /주석 말투/);
 });
 
 test('허용 목록 .prose-check-allow 안의 글귀는 후보에서 빼고 뺀 수를 보인다', () => {
@@ -131,6 +135,55 @@ test('허용 목록은 파일이 있는 폴더의 위쪽에서도 찾는다', ()
     const r = spawnSync(process.execPath, [CHECK, file], { encoding: 'utf8' });
     assert.match(r.stdout, /허용 목록 .*으로 뺀 후보 1건/);
     assert.equal(r.status, 0);
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('저장소 밖 파일은 현재 폴더의 저장소에서 허용 목록을 찾는다', () => {
+  const repo = fs.mkdtempSync(path.join(os.tmpdir(), 'ste-repo-'));
+  const outside = fs.mkdtempSync(path.join(os.tmpdir(), 'ste-out-'));
+  const other = fs.mkdtempSync(path.join(os.tmpdir(), 'ste-other-'));
+  try {
+    fs.mkdirSync(path.join(repo, '.git'));
+    fs.writeFileSync(path.join(repo, '.prose-check-allow'), '메시지가 남아 있\n');
+    // 임시 폴더처럼 어느 저장소에도 없는 파일은 현재 폴더(repo)의 목록을 사용한다
+    const file = path.join(outside, 'ai-text.md');
+    fs.writeFileSync(file, '큐에 메시지가 남아 있다.\n');
+    const r = spawnSync(process.execPath, [CHECK, file], { encoding: 'utf8', cwd: repo });
+    assert.match(r.stdout, /허용 목록 .*으로 뺀 후보 1건/);
+    // 다른 저장소 안의 파일은 그 저장소의 규칙을 따른다. 현재 폴더의 목록을 빌리지 않는다
+    fs.mkdirSync(path.join(other, '.git'));
+    const inOther = path.join(other, 'note.md');
+    fs.writeFileSync(inOther, '큐에 메시지가 남아 있다.\n');
+    const r2 = spawnSync(process.execPath, [CHECK, '--all', inOther], { encoding: 'utf8', cwd: repo });
+    assert.doesNotMatch(r2.stdout, /허용 목록/);
+    assert.match(r2.stdout.replace(/\x1b\[[0-9;]*m/g, ''), /직역 동사 · K2 {2}남아 있/);
+  } finally {
+    for (const d of [repo, outside, other]) fs.rmSync(d, { recursive: true, force: true });
+  }
+});
+
+test('본문의 4분의 1 이상이 다른 등급이면 목록·표를 펼친 글인지 한 줄로 알린다', () => {
+  // 판단 글(합쇼체)과 절차(해라체)를 모두 문단으로 펼친 글
+  const flat = Array.from({ length: 12 }, (_, i) => `서비스 ${i}의 오류는 정상 흐름 기록입니다.\n\n로그 ${i}의 원인을 확인한다.\n`).join('\n');
+  const r = run(flat, { args: ['--no-morph'] });
+  assert.match(r.out, /주의 본문 문장 24개 중 12개\(50%\)가 .*아니다\. 목록이나 표를 문단으로 펼쳐 뽑은 글이면 원래 구조로 다시 뽑는다/);
+  // 같은 글이라도 절차를 목록으로 두면 알리지 않는다
+  const structured = Array.from({ length: 12 }, (_, i) => `서비스 ${i}의 오류는 정상 흐름 기록입니다.\n\n- 로그 ${i}의 원인을 확인한다.\n`).join('\n');
+  assert.doesNotMatch(run(structured, { args: ['--no-morph'] }).out, /주의 본문 문장/);
+});
+
+test('형태소 분석 도우미가 제한 시간을 넘기면 정규식만으로 계속한다', { skip: !venvPython() && 'Kiwi가 없다' }, () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ste-check-'));
+  try {
+    fs.mkdirSync(path.join(dir, '.git'));
+    const file = path.join(dir, 'doc.md');
+    fs.writeFileSync(file, '결과가 캐시에 남는다.\n');
+    const r = spawnSync(process.execPath, [CHECK, '--all', file], { encoding: 'utf8', env: { ...process.env, PROSE_CHECK_KIWI_TIMEOUT_MS: '1' } });
+    const out = r.stdout.replace(/\x1b\[[0-9;]*m/g, '');
+    assert.match(out, /형태소 분석 실패, 정규식만 사용한다: Kiwi 도우미가 0\.001초 안에 끝나지 않았다/);
+    assert.match(out, /직역 동사 · K2 {2}남는다/);
   } finally {
     fs.rmSync(dir, { recursive: true, force: true });
   }

@@ -175,7 +175,7 @@ const RULES = [
   { id: 'B', tag: '주석 말투 · STE 1.10', re: /얹고|얹는다/g, fix: '붙이고 · 붙인다' },
   { id: 'B', tag: '주석 말투 · STE 1.10', re: /깃헙 꼴|[가-힣] 꼴(?:의|로|이)/g, fix: '~처럼 보여주는 · ~ 형태' },
   // 목적어가 수인 꼴(`문서 수를 센다`·`행을 센다`)은 실제로 세는 일이라 뺀다. `챌린지를 센다`는 후보로 보고하고 §6이 판정한다
-  { id: 'B', tag: '주석 말투 · STE 1.10', re: /(?<!(?:수|행|줄)[를을] )세다|(?<!(?:수|행|줄)[를을] )셉니다|(?<!수|행|줄)[을를] 센다|센 값|센 후보|세는 (?:것|수|숫자)|후보 세기/g, fix: '읽는다 · 찾는다 · 모은다 · 뽑는다' },
+  { id: 'B', tag: '주석 말투 · STE 1.10', re: /(?<!(?:수|행|줄)[를을] )세다|(?<!(?:수|행|줄)[를을] )셉니다|(?<!(?:수|행|줄)[를을] )셌(?:다|습니다)|(?<!수|행|줄)[을를] 센다|센 값|센 후보|세는 (?:것|수|숫자)|후보 세기/g, fix: '읽는다 · 찾는다 · 모은다 · 뽑는다' },
   { id: 'B', tag: '주석 말투 · STE 1.10', re: /섭니다|[가-힣] 선다|안 서고| 서고 | 서는 | 섰다| 설 수|세웁니다|세우고|세운다/g, not: /(?:앞|먼저|가로)?서다/, fix: '나온다 · 만든다 · 생긴다' },
   // 찍다(출력 뜻)는 개발자끼리의 말투다. 로그·콘솔·화면 같은 출력 대상이 앞에 올 때만 본다(사진·도장을 찍는다는 뺀다)
   { id: 'B', tag: '주석 말투 · STE 1.10', re: /(?:로그|콘솔|화면|CLI|터미널|stdout|stderr|출력|값|변수|메시지)[을를에가이]?\s(?:[가-힣A-Za-z]+\s)?찍(?:는다|습니다|는\s|어|었|고\s|을\s|으면|힌|히는|힌다|혀)/g, fix: '출력한다 · 기록한다 · 화면 사진이면 캡처한다' },
@@ -197,19 +197,22 @@ const RULES = [
   { id: 'C', tag: '직역투 문형 · K6', re: /를 가지고 있|[을를] 갖(?:는다|습니다|고 있|지 않|지 못)|[을를] 가지지 (?:않|못)/g, fix: '~가 있다 · ~가 없다' },
   // 영어 전치사를 옮긴 조사 구문 (K6). 사람이 작성한 기술 글에도 흔해서 밀도로 본다(S2)
   { id: 'C', tag: '직역투 문형 · K6', sev: 'S2', re: /[을를] 통해|에 의해|에 대한 것|할 필요가 있/g, fix: '조사로 푼다 · ~해야 한다' },
-  // 물건이 움직이거나 놓이는 것처럼 작성한 동사 (K2). 일상어와 겹치는 동사는 밀도로 본다(S2)
+  // 물건이 움직이거나 놓이는 것처럼 작성한 동사 (K2). 일상어와 겹치는 동사는 밀도로 본다(S2).
+  // 활용형은 해라체·합쇼체의 현재(-ㄴ다·-ㅂ니다)와 과거(-았다·-았습니다·-았고)를 함께 넣는다. 판단 글은 합쇼체가 많다
   { id: 'C', tag: '직역 동사 · K2', re: /(?<!일)자리(?!표시자|수)/g, fix: '가리키는 것을 작성한다: 줄 · 파일 · 심볼 · 곳' },
-  // `받는 사람`은 수신자를 뜻하는 굳은 말이고, `영향받다`·`지적받다`는 한국어에 원래 있는 말이라 뺀다
-  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: /(?<!영향|영향을 |주고|돌려|넘겨|전달|이어|물려|지적)받(?!는 사람)(?:는다|습니다|고 |는 |은 |아 |았다)/g, fix: '붙는다 · 차지한다 · 생긴다 · 읽는다' },
-  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: /남(?:는다|습니다|고 |는 |긴다|겼다|긴 |겨 |아 있|았다)/g, fix: '하나뿐이다 · 보인다 · 그대로 둔다 · 기록한다' },
+  // `받는 사람`은 수신자를 뜻하는 굳은 말이고, `영향받다`·`지적받다`는 한국어에 원래 있는 말이라 뺀다.
+  // 목적어가 코드 스팬이면(`500`을 받은 메시지) 응답·값을 실제로 받는 말이라 뺀다. 코드 스팬은 가린 글에서 공백 세 칸 이상이다(잡다의 catch 판별과 같다)
+  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: /(?<!영향|영향을 |주고|돌려|넘겨|전달|이어|물려|지적| {3}[을를] )받(?!는 사람)(?:는다|습니다|고 |는 |은 |아 |아서 |았다|았습니다|았고 |았던 )/g, fix: '붙는다 · 차지한다 · 생긴다 · 읽는다' },
+  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: /남(?:는다|습니다|고 |는 |긴다|깁니다|겼다|겼습니다|긴 |겨 |기고 |아 있|았다|았습니다|았고 |았던 )/g, fix: '하나뿐이다 · 보인다 · 그대로 둔다 · 기록한다' },
   { id: 'C', tag: '개수 문장 · K8', re: /(?:은|는|이|가) (?:둘|셋|넷|다섯|여섯|일곱|여덟)(?:이다|뿐이다|이고)/g, fix: '개수 문장을 지우고 목록만 작성한다' },
-  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: /맡(?:는다|습니다|고 |는 |은 |긴다|겼다|긴 |아 |았다)/g, fix: '정한다 · 무엇이 어디에 나오는지 작성한다' },
-  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: /(?:으로|로|에) (?:간다|가고 |온다|오고 )|떨어진다|떨어지고|떨어지는|떨어질/g, fix: '분류한다 · 전송된다 · 사라진다 · 저장된다' },
-  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: /(?:[이가에] |안 )(?:든다|든 |드는 |들고 )/g, fix: '달린 · 속한 · 있는 · 저장된다' },
-  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: / (?:댄다|대고|대는|댔다|댈)(?=[\s.,)|])/g, fix: '기록한다 · 보여 준다' },
-  // 시간·시일이 걸린다, 마음에 걸린다, 부하가 걸린다는 한국어에 원래 있는 말이라 뺀다
-  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: / (?:건다|걸린다|걸린|걸리는|걸리고|걸리면|걸리지|걸릴|걸려|걸고|걸어|걸렸다)(?=[\s.,)|])/g, not: /(?:시간|시일|기간|며칠|오래|초|분|마음에|부하가)[이가에]? ?걸/, fix: '적용된다 · 일치한다 · 통과하지 못한다' },
-  { id: 'C', tag: '직역 동사 · K2', re: /닿(?:는다|습니다|는 |은 |아 |았다|을 |지 )|이긴다|이기고 |이기는 |쥔다|쥐고 |쥔 |쥐는 /g, fix: '호출을 따라가면 이른다 · 따른다 · 저장한다' },
+  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: /맡(?:는다|습니다|고 |는 |은 |긴다|깁니다|겼다|겼습니다|긴 |기고 |아 |았다|았습니다|았고 )/g, fix: '정한다 · 무엇이 어디에 나오는지 작성한다' },
+  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: /(?:으로|로|에) (?:간다|갑니다|갔다|갔습니다|가고 |온다|옵니다|왔다|왔습니다|오고 )|떨어진다|떨어집니다|떨어졌다|떨어졌습니다|떨어지고|떨어지는|떨어질/g, fix: '분류한다 · 전송된다 · 사라진다 · 저장된다' },
+  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: /(?:[이가에] |안 )(?:든다|듭니다|든 |드는 |들고 )/g, fix: '달린 · 속한 · 있는 · 저장된다' },
+  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: / (?:댄다|댑니다|대고|대는|댔다|댔습니다|댈)(?=[\s.,)|])/g, fix: '기록한다 · 보여 준다' },
+  // 시간·시일이 걸린다, 마음에 걸린다, 부하가 걸린다는 한국어에 원래 있는 말이라 뺀다.
+  // `겁니다`는 `할 겁니다`(것입니다의 준말)와 겉모양이 같아 넣지 않는다
+  { id: 'C', tag: '직역 동사 · K2', sev: 'S2', re: / (?:건다|걸었다|걸었습니다|걸린다|걸립니다|걸린|걸리는|걸리고|걸리면|걸리지|걸릴|걸려|걸고|걸어|걸렸다|걸렸습니다)(?=[\s.,)|])/g, not: /(?:시간|시일|기간|며칠|오래|초|분|마음에|부하가)[이가에]? ?걸/, fix: '적용된다 · 일치한다 · 통과하지 못한다' },
+  { id: 'C', tag: '직역 동사 · K2', re: /닿(?:는다|습니다|는 |은 |아 |았다|았습니다|을 |지 )|이긴다|이깁니다|이겼다|이겼습니다|이기고 |이기는 |쥔다|쥡니다|쥐었다|쥐었습니다|쥐고 |쥔 |쥐는 /g, fix: '호출을 따라가면 이른다 · 따른다 · 저장한다' },
   { id: 'C', tag: '직역 동사 · K2', re: /(?<![가-힣])박(?:는다|습니다|아 |았다|았습니다|고 |는 |은 |힌 |혀 |아둔|아 둔|아두)/g, fix: '넣는다 · 고정한다 · 기록한다' },
 
   // ── D. 모호한 동사 ───────────────────────────────────────────
@@ -653,6 +656,7 @@ function maskedTextOf(t) {
  * 허용 목록. 프로젝트가 자기 분야의 사실 표현을 적어 둔 파일이다. 한 줄에 한 글귀, `#`부터 주석이다.
  * 글귀 안에 있는 낱말 후보는 보고하지 않는다. 글귀는 두 어절 이상이어야 한다 — 낱말 하나를 통째로 허용하지 못하게.
  * 파일이 있는 폴더에서 저장소 최상위(.git이 있는 폴더)까지 올라가며 처음 찾은 것을 사용한다.
+ * 파일이 어느 저장소에도 없으면(임시 폴더에 뽑은 글 등) 현재 폴더의 저장소에서 찾는다.
  */
 const ALLOW_FILE = '.prose-check-allow';
 const allowCache = new Map();
@@ -670,21 +674,27 @@ function readAllow(file) {
   const rel = path.relative(process.cwd(), file);
   return { file: rel && !rel.startsWith('..') ? rel : file, phrases };
 }
-function allowFor(abs) {
+/** 폴더에서 위로 찾는다. 저장소 최상위에서 멈춘다. 파일시스템 뿌리까지 저장소가 없으면 outside 다 */
+function lookupAllow(start) {
   const dirs = [];
-  let dir = path.dirname(path.resolve(abs));
-  let found = null;
+  let dir = start;
+  let res = { found: null, outside: false };
   for (;;) {
-    if (allowCache.has(dir)) { found = allowCache.get(dir); break; }
+    if (allowCache.has(dir)) { res = allowCache.get(dir); break; }
     dirs.push(dir);
     const file = path.join(dir, ALLOW_FILE);
-    if (fs.existsSync(file)) { found = readAllow(file); break; }
+    if (fs.existsSync(file)) { res = { found: readAllow(file), outside: false }; break; }
+    if (fs.existsSync(path.join(dir, '.git'))) break;
     const parent = path.dirname(dir);
-    if (fs.existsSync(path.join(dir, '.git')) || parent === dir) break;
+    if (parent === dir) { res = { found: null, outside: true }; break; }
     dir = parent;
   }
-  for (const d of dirs) allowCache.set(d, found);
-  return found;
+  for (const d of dirs) allowCache.set(d, res);
+  return res;
+}
+function allowFor(abs) {
+  const r = lookupAllow(path.dirname(path.resolve(abs)));
+  return r.outside ? lookupAllow(process.cwd()).found : r.found;
 }
 /** 허용 글귀가 원문에서 차지하는 범위. 후보가 그 안에 다 들어가면 뺀다 */
 function allowedRanges(text, allow) {
@@ -926,6 +936,12 @@ function levelCandidates(d) {
     if (e.level === 'banmal') add(e, 'S1', 'F', '높임 등급 · K9', '반말로 맺지 않는다. 글의 등급으로 맞춘다', 'K9-banmal');
   if (main) {
     const name = LEVEL_NAME[main];
+    // 본문의 4분의 1 이상이 다른 등급이면 글이 원래 두 등급을 나눠 쓰는 구조일 수 있다. 목록·표를 문단으로 펼쳐 뽑은 글이 대표다.
+    // 후보는 그대로 보이고, 파일마다 한 줄로 알린다 (K9는 목록과 표를 본문과 따로 센다)
+    const leveled = body.filter((e) => MAIN_LEVELS.includes(e.level) && !allowedLevel(e, main));
+    const off = leveled.filter((e) => e.level !== main).length;
+    if (leveled.length >= 20 && off >= 10 && off / leveled.length >= 0.25)
+      d.notes = [`본문 문장 ${leveled.length}개 중 ${off}개(${Math.round((off / leveled.length) * 100)}%)가 ${name}가 아니다. 목록이나 표를 문단으로 펼쳐 뽑은 글이면 원래 구조로 다시 뽑는다. K9는 목록과 표를 본문과 따로 센다`];
     for (const e of body) {
       if (e.level === 'nominal') add(e, 'S2', 'F', '높임 등급 · K9', '본문을 명사형(-함·-음)으로 맺지 않는다. 목록과 표에서만 사용한다', 'K9-nominal');
       else if (MAIN_LEVELS.includes(e.level) && e.level !== main && !allowedLevel(e, main)) {
@@ -981,6 +997,7 @@ for (const d of docs) {
   quietTotal += quiet.length;
   for (const c of shown) bySev[c.sev]++;
   log(`\n\x1b[1m${d.t.file}\x1b[0m — ${shown.length}건`);
+  for (const note of d.notes ?? []) log(`  \x1b[33m주의\x1b[0m ${note}`);
   if (d.skipped.size) {
     const n = [...d.skipped.values()].reduce((a, b) => a + b, 0);
     const list = [...d.skipped].map(([p, c]) => `"${p}" ${c}`).join(' · ');
@@ -1099,7 +1116,7 @@ if (TSV_OUT) {
 const morphLine = NO_MORPH ? '형태소 분석 끔' : morph ? `형태소 분석 Kiwi ${morph.version} · ${morph.model}` : '형태소 분석 없음';
 const quietLine = quietTotal ? ` S2 기준 미만 ${quietTotal}건은 위 요약 줄에 있다.` : '';
 if (JSON_OUT) {
-  console.log(JSON.stringify({ morph, morphMissing, setupSkipped: setupSkipped(), candidates: allCands, whole, sentences: sentenceCands }, null, 1));
+  console.log(JSON.stringify({ morph, morphMissing, setupSkipped: setupSkipped(), candidates: allCands, whole, sentences: sentenceCands, notes: docs.flatMap((d) => (d.notes ?? []).map((note) => ({ file: d.t.file, note }))) }, null, 1));
 } else {
   console.log(
     total || long

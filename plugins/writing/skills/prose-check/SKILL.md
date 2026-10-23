@@ -33,6 +33,7 @@ English text follows STE as written: 25 words for descriptions, 20 for procedure
   - `--base=<ref>`: changes on this branch since it left `<ref>` (`git diff <ref>...HEAD`).
 - **`--pr <number>`**: review the title and body from `gh pr view <number> --json title,body`. To review the PR's file changes too, check out its branch and use `--base=<its base branch>`.
 - **Pasted text** or "the text above": write it to a file in the scratchpad and review that file, so line numbers work.
+- **Text extracted from a structured document** (report fields, JSON values): keep the structure. Write prose as paragraphs, steps as list items, and labels as table rows. The speech-level rule (K9) counts paragraphs, lists, and tables separately. A file that turns every field into a paragraph reports each list item as a speech-level mix.
 - **Nothing given**: use `--base=<default branch>` and say which base you chose.
 
 In the changed-lines modes, the script reads each whole file for sentence context but reports only candidates on added or modified lines. It looks at Markdown, text, HTML, SVG, and JSON files. Code files are left out because comments are compressed on purpose (Step 0). Add `--code` to include JS and TS files.
@@ -81,7 +82,9 @@ Each candidate also has a severity. S1 candidates are always listed. S2 candidat
 
 The script also reports two kinds of whole-file candidates. One is two words for the same action, such as `재다` and `측정` (1.11). The other is one light verb used in several sentence patterns, such as `보다` (1.3).
 
-Korean morphology comes from Kiwi (kiwipiepy, model `cong-global`), for Markdown, text, and HTML files. With Kiwi, the script finds contractions such as `~는 건`, spoken adverbs, and interjections by part of speech. It also classifies sentence endings that the surface form cannot, such as noun-form endings (`높아짐`). Without Kiwi, the script uses regex only and misses some of these.
+If a quarter or more of the body sentences use another speech level, the script prints one `주의` line for the file. The usual cause is a flattened extract: lists or tables written as paragraphs. Fix the extract first, then read the K9 candidates again.
+
+Korean morphology comes from Kiwi (kiwipiepy, model `cong-global`), for Markdown, text, and HTML files. With Kiwi, the script finds contractions such as `~는 건`, spoken adverbs, and interjections by part of speech. It also classifies sentence endings that the surface form cannot, such as noun-form endings (`높아짐`). Without Kiwi, the script uses regex only and misses some of these. If the Kiwi helper fails or runs longer than 5 minutes (`PROSE_CHECK_KIWI_TIMEOUT_MS`), the script says so and continues with regex only.
 
 If the output starts with `[형태소 분석기 없음]`, ask the user once whether to install Kiwi. The setup installs kiwipiepy into `~/.cache/prose-check` (about 140 MB).
 
@@ -106,6 +109,7 @@ A project can declare phrases that state a fact in its own domain, such as `메�
 - The script matches the phrase against the raw file text. Write it as it appears in the file.
 - Add a phrase only after it passed the two conditions in `references/korean-patterns.md` §6. The list records a judgment. It is not a rule, and Step 2 still reads those sentences.
 - The script looks for the file from the reviewed file's directory up to the repository root (the first directory with `.git`).
+- A reviewed file outside any repository, such as text extracted to a temporary folder, uses the list of the current directory's repository. A file inside another repository does not borrow it.
 
 The tests for this script are in the source repository, not in the installed skill. See "Maintaining the lists".
 
