@@ -75,7 +75,7 @@
       "name": "writing",
       "source": "./plugins/writing",
       "description": "Korean prose style: make Korean UI copy and technical prose natural and concise without changing facts, identifiers, or tone, and review prose against ASD-STE100 (Simplified Technical English) rules.",
-      "version": "0.5.1",
+      "version": "0.5.2",
       "author": {
         "name": "cranemont"
       },

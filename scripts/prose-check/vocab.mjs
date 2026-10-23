@@ -42,17 +42,22 @@ function readXlsx(file) {
   const unxml = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
   const strings = [...part('xl/sharedStrings.xml').matchAll(/<si>([\s\S]*?)<\/si>/g)].map((m) => unxml([...m[1].matchAll(/<t[^>]*>([^<]*)<\/t>/g)].map((t) => t[1]).join('')));
   // 시트 이름과 파일을 workbook.xml·관계 파일로 잇는다
-  const rels = Object.fromEntries([...part('xl/_rels/workbook.xml.rels').matchAll(/Id="([^"]+)"[^>]*Target="([^"]+)"/g)].map((m) => [m[1], m[2]]));
-  const sheets = [...part('xl/workbook.xml').matchAll(/<sheet [^>]*name="([^"]+)"[^>]*r:id="([^"]+)"/g)].map((m) => ({ name: m[1], target: rels[m[2]] }));
+  // XML 속성은 순서에 뜻이 없다. 태그의 속성을 먼저 모두 읽고 이름으로 꺼낸다
+  const attrsOf = (tag) => Object.fromEntries([...tag.matchAll(/([\w:]+)="([^"]*)"/g)].map((m) => [m[1], m[2]]));
+  const rels = Object.fromEntries([...part('xl/_rels/workbook.xml.rels').matchAll(/<Relationship\s[^>]*>/g)].map((m) => { const a = attrsOf(m[0]); return [a.Id, a.Target]; }));
+  const sheets = [...part('xl/workbook.xml').matchAll(/<sheet\s[^>]*>/g)].map((m) => { const a = attrsOf(m[0]); return { name: a.name ?? '', target: rels[a['r:id']] }; });
   const all = sheets.find((s) => s.name.startsWith('전체'));
   if (!all) throw new Error(`'전체' 시트가 없다: ${sheets.map((s) => s.name).join(', ')}`);
   const xml = part(`xl/${all.target.replace(/^\/?xl\//, '')}`);
   const rows = [];
   for (const r of xml.matchAll(/<row[^>]*>([\s\S]*?)<\/row>/g)) {
     const cells = {};
-    for (const c of r[1].matchAll(/<c r="([A-Z]+)\d+"([^>]*)>(?:<v>([^<]*)<\/v>|<is>([\s\S]*?)<\/is>)?<\/c>/g)) {
-      const [, colName, attrs, v, inline] = c;
-      cells[colName] = /t="s"/.test(attrs) ? strings[Number(v)] : inline ? unxml(inline.replace(/<[^>]+>/g, '')) : (v ?? '');
+    for (const c of r[1].matchAll(/<c\s([^>]*?)(?<!\/)>(?:<v>([^<]*)<\/v>|<is>([\s\S]*?)<\/is>)?<\/c>/g)) {
+      const [, attrText, v, inline] = c;
+      const a = attrsOf(attrText);
+      const colName = a.r?.match(/^[A-Z]+/)?.[0];
+      if (!colName) continue;
+      cells[colName] = a.t === 's' ? strings[Number(v)] : inline ? unxml(inline.replace(/<[^>]+>/g, '')) : (v ?? '');
     }
     rows.push(cells);
   }

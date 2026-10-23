@@ -227,7 +227,14 @@ console.log(`쌍 ${pairs.length}개 (다루는 범주 ${pairs.filter((p) => p.ex
 let worse = 0;
 const out = { date: new Date().toISOString().slice(0, 10) };
 for (const mode of modes) {
-  const now = report(mode, measurePairs(pairs, mode), HUMAN ? measureHuman(mode) : null);
+  const measured = measurePairs(pairs, mode);
+  // 형태소 분석이 실패하면 check.mjs가 정규식으로 돈다. 그 값을 형태소 기준과 비교하거나 기준으로 저장하지 않는다
+  if (mode === 'morph' && !measured.morph) {
+    console.log('\n형태소 모드: 형태소 분석이 실패해 정규식 결과가 나왔다. 이 모드는 비교와 저장에서 뺀다');
+    if (saved?.morph) out.morph = saved.morph;
+    continue;
+  }
+  const now = report(mode, measured, HUMAN ? measureHuman(mode) : null);
   // --human 없이 저장하면 이전 기준의 사람 글 값을 그대로 둔다
   if (!now.human && saved?.[mode]?.human) now.human = saved[mode].human;
   out[mode] = now;

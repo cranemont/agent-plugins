@@ -2,7 +2,7 @@
 
 writing 플러그인의 `prose-check` 스킬을 관리하는 도구와 데이터다. 이 파일들은 플러그인 폴더 밖에 있다. Claude Code는 플러그인을 설치할 때 플러그인 폴더 전체를 사용자의 플러그인 캐시에 복사한다. 관리용 파일은 스킬을 실행할 때 필요 없으므로, 설치할 때 복사되지 않게 한다.
 
-모든 명령은 저장소 최상위에서 실행한다. 형태소 분석기 Kiwi가 필요한 도구는 먼저 `node plugins/writing/skills/prose-check/scripts/check.mjs --setup`으로 Kiwi를 설치한다.
+모든 명령은 저장소 최상위에서 실행한다. 형태소 분석기 Kiwi가 필요한 도구는 먼저 `node plugins/writing/skills/prose-check/scripts/check.mjs --setup`으로 Kiwi를 설치한다. `vocab.mjs --build`는 xlsx 파일을 풀려고 시스템의 `unzip` 명령을 사용한다. `unzip`이 `PATH`에 있어야 한다.
 
 ## 파일
 
