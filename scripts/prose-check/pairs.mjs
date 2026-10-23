@@ -14,7 +14,7 @@
  *   node scripts/prose-check/pairs.mjs --human      사람 글 기준 말뭉치(데이터 폴더의 baseline-cache)의 1,000어절당 후보 수도 측정한다
  *   node scripts/prose-check/pairs.mjs --no-morph   정규식 모드만 돌린다
  *
- * 나빠짐: 전에 탐지한 쌍을 놓치거나, 고친 뒤 문장에 새 후보가 나온다.
+ * 나빠짐: 전에 탐지한 쌍을 놓치거나, 고친 뒤 문장에 새 후보가 나온다. 형태소 분석이 실패해 형태소 모드를 검증하지 못해도 실패로 끝낸다.
  * 사람 글의 후보 수가 늘어난 규칙은 실패로 보지 않고 알린다. 늘어난 후보는 precision.mjs로 판정한다.
  */
 import fs from 'node:fs';
@@ -228,10 +228,12 @@ let worse = 0;
 const out = { date: new Date().toISOString().slice(0, 10) };
 for (const mode of modes) {
   const measured = measurePairs(pairs, mode);
-  // 형태소 분석이 실패하면 check.mjs가 정규식으로 돈다. 그 값을 형태소 기준과 비교하거나 기준으로 저장하지 않는다
+  // 형태소 분석이 실패하면 check.mjs가 정규식으로 돈다. 그 값을 형태소 기준과 비교하거나 기준으로 저장하지 않는다.
+  // 검증할 때는 이 모드를 확인하지 못한 것이므로 실패로 끝낸다
   if (mode === 'morph' && !measured.morph) {
-    console.log('\n형태소 모드: 형태소 분석이 실패해 정규식 결과가 나왔다. 이 모드는 비교와 저장에서 뺀다');
+    console.log(`\n형태소 모드: 형태소 분석이 실패해 정규식 결과가 나왔다. 이 모드는 비교와 저장에서 뺀다${SAVE ? '' : '. 검증하지 못했으므로 종료 코드 1'}`);
     if (saved?.morph) out.morph = saved.morph;
+    if (!SAVE) worse++;
     continue;
   }
   const now = report(mode, measured, HUMAN ? measureHuman(mode) : null);
