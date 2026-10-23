@@ -133,6 +133,8 @@ function measureHuman(mode) {
 
 const pct = (a, b) => (b ? `${Math.round((100 * a) / b)}%` : '-');
 const uniq = (list) => [...new Set(list)];
+/** 규칙 번호 목록 → 규칙마다 나온 수 */
+const countOf = (codes) => codes.reduce((m, c) => m.set(c, (m.get(c) ?? 0) + 1), new Map());
 
 function report(mode, { rows, morph }, human) {
   const label = mode === 'regex' ? '정규식 모드' : `형태소 모드 (${morph ? `Kiwi ${morph.version} · ${morph.model}` : '분석기 없음'})`;
@@ -173,7 +175,8 @@ function report(mode, { rows, morph }, human) {
     morph: morph ? `${morph.version} ${morph.model}` : null,
     detected: hits,
     scoped: scoped.length,
-    pairs: Object.fromEntries(rows.map((r) => [r.id, { hit: r.hit, before: uniq(r.b.map((c) => c.code)).sort(), after: uniq(r.a.map((c) => c.code)).sort() }])),
+    // 고친 뒤 후보는 같은 규칙이 여러 번 나와도 그대로 둔다. 규칙을 고쳐 같은 규칙 후보가 하나 더 생겨도 비교에서 보인다
+    pairs: Object.fromEntries(rows.map((r) => [r.id, { hit: r.hit, before: uniq(r.b.map((c) => c.code)).sort(), after: r.a.map((c) => c.code).sort() }])),
     ...(human ? { human } : {}),
   };
 }
@@ -190,12 +193,16 @@ function compare(mode, now, saved) {
     const q = prev.pairs[id];
     if (!q) {
       better.push(`${id} 새 쌍`);
+      // 새 쌍의 고친 뒤 후보는 아직 아무도 읽지 않았다. 읽고 맞으면 --save로 기준에 넣는다
+      if (p.after.length) worse.push(`${id} 새 쌍의 고친 뒤 문장에 후보 ${p.after.join(', ')}`);
       continue;
     }
     if (q.hit && !p.hit) worse.push(`${id} 탐지를 잃었다`);
     if (!q.hit && p.hit) better.push(`${id} 새로 탐지`);
-    const added = p.after.filter((c) => !q.after.includes(c));
-    const gone = q.after.filter((c) => !p.after.includes(c));
+    // 규칙마다 후보 수를 비교한다
+    const now = countOf(p.after), was = countOf(q.after);
+    const added = [...now].filter(([c, n]) => n > (was.get(c) ?? 0)).map(([c, n]) => `${c} +${n - (was.get(c) ?? 0)}`);
+    const gone = [...was].filter(([c, n]) => n > (now.get(c) ?? 0)).map(([c, n]) => `${c} −${n - (now.get(c) ?? 0)}`);
     if (added.length) worse.push(`${id} 고친 뒤 문장에 새 후보 ${added.join(', ')}`);
     if (gone.length) better.push(`${id} 고친 뒤 후보 사라짐 ${gone.join(', ')}`);
   }

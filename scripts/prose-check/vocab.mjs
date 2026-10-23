@@ -27,12 +27,18 @@ const CACHE = path.join(dataDir(), 'baseline-cache');
 const args = process.argv.slice(2);
 const opt = (name, dflt) => args.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3) ?? dflt;
 const GRADE = Number(opt('grade', 3));
+if (!Number.isInteger(GRADE) || GRADE < 1 || GRADE > 5) {
+  console.error(`--grade는 1~5의 정수다: ${opt('grade')}`);
+  process.exit(2);
+}
 /** 목록에 없는 낱말의 등급 */
 const NONE = 6;
 
 /** xlsx의 '전체' 시트를 [어휘, 등급, 품사, 어종] 행으로 바꾼다. xlsx는 zip이라 unzip으로 꺼낸다 */
 function readXlsx(file) {
-  const part = (name) => execFileSync('unzip', ['-p', file, name], { encoding: 'utf8', maxBuffer: 1 << 30 });
+  // 공유 문자열 표(sharedStrings.xml)는 없어도 되는 부분이다. 없는 부분은 빈 글로 읽고, 셀의 인라인 문자열을 그대로 사용한다
+  const entries = new Set(execFileSync('unzip', ['-Z1', file], { encoding: 'utf8', maxBuffer: 1 << 26 }).split('\n'));
+  const part = (name) => (entries.has(name) ? execFileSync('unzip', ['-p', file, name], { encoding: 'utf8', maxBuffer: 1 << 30 }) : '');
   const unxml = (s) => s.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, '&');
   const strings = [...part('xl/sharedStrings.xml').matchAll(/<si>([\s\S]*?)<\/si>/g)].map((m) => unxml([...m[1].matchAll(/<t[^>]*>([^<]*)<\/t>/g)].map((t) => t[1]).join('')));
   // 시트 이름과 파일을 workbook.xml·관계 파일로 잇는다
