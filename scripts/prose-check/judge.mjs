@@ -34,7 +34,17 @@ const FILES = ['t1.md', 't2.md'];
 const WHOLE = new Set(['K4', 'K9', 'STE 1.3', 'STE 1.11', 'STE 6.5', 'STE 6.6']);
 
 const args = process.argv.slice(2);
-const opt = (name, dflt) => args.find((a) => a.startsWith(`--${name}=`))?.slice(name.length + 3) ?? dflt;
+/** `--name=값`의 값. 옵션이 없으면 dflt를 돌려준다. 값 없이 주면 측정 조건을 잘못 기록하므로 끝낸다 */
+function opt(name, dflt) {
+  const given = args.find((a) => a === `--${name}` || a.startsWith(`--${name}=`));
+  if (given === undefined) return dflt;
+  const value = given.slice(name.length + 3);
+  if (!value) {
+    console.error(`--${name}=<값>으로 준다`);
+    process.exit(2);
+  }
+  return value;
+}
 const SHOW = args.includes('--show');
 const SAVE = args.includes('--save');
 
@@ -60,7 +70,8 @@ function mulberry32(seed) {
 }
 
 const intOpt = (name, dflt, min) => {
-  const n = Number(opt(name, dflt));
+  const raw = String(opt(name, dflt));
+  const n = /^\d+$/.test(raw) ? Number(raw) : NaN;
   if (!Number.isInteger(n) || n < min) {
     console.error(`--${name}는 ${min} 이상의 정수다`);
     process.exit(2);
@@ -68,13 +79,16 @@ const intOpt = (name, dflt, min) => {
   return n;
 };
 
+/** 셸 인수로 인용한다. 공백 같은 글자가 없으면 그대로 둔다 */
+const sh = (s) => (/^[\w@%+=:,./-]+$/.test(s) ? s : `'${s.replace(/'/g, `'\\''`)}'`);
+
 function promptFor(input, report, env) {
   const base = path.basename(input);
   return [
     `\`${SKILL}/SKILL.md\`를 읽고 그 절차대로 \`${input}\` 파일을 검토한다. \`<skill-dir>\`는 \`${SKILL}\`이다. 설치된 다른 글 검토 스킬은 사용하지 않는다.`,
     '',
     '- 이 글의 문단은 서로 다른 공공 문서에서 하나씩 뽑은 문장이다. 문단마다 따로 판정한다. 글 전체를 보는 규칙(K4·6.5·6.6 문단 구성, K9 높임 등급, 1.3·1.11 한 낱말 한 뜻)은 적용하지 않는다.',
-    `- Step 1 명령: \`${env}node ${SKILL}/scripts/check.mjs ${input}\``,
+    `- Step 1 명령: \`${env}node ${sh(`${SKILL}/scripts/check.mjs`)} ${sh(input)}\``,
     '- 글은 고치지 않는다.',
     `- 보고서는 SKILL.md "Report" 형식으로 \`${report}\`에 저장한다. 발견마다 첫 줄은 \`${base}:<줄> [규칙 태그] 문제\`로 시작한다. 오탐 판단과 요약 줄은 위치로 시작하지 않는다.`,
     '- 저장한 뒤 발견 수만 한 줄로 답한다.',
@@ -107,7 +121,7 @@ function prepare() {
   const key = { seed, runs, files: Object.fromEntries(FILES.map((f, k) => [f, docs[k].map(({ id, side }) => ({ id, side }))])) };
   fs.writeFileSync(path.join(dir, 'key.json'), JSON.stringify(key, null, 1) + '\n');
   // 에이전트가 이 명령을 돌릴 때도 같은 데이터 폴더의 Kiwi를 사용하게 한다
-  const env = process.env.PROSE_CHECK_HOME ? `PROSE_CHECK_HOME=${process.env.PROSE_CHECK_HOME} ` : '';
+  const env = process.env.PROSE_CHECK_HOME ? `PROSE_CHECK_HOME=${sh(process.env.PROSE_CHECK_HOME)} ` : '';
   const jobs = [];
   for (let r = 1; r <= runs; r++) {
     for (const f of FILES) {
@@ -146,6 +160,8 @@ function score(dir) {
   const scoped = pairs.filter((p) => p.expect.length);
   const reportDir = path.join(dir, 'reports');
   const missing = [];
+  // 보고서에 다른 글의 위치가 있으면 그 글의 문장으로 채점하지 않는다
+  const misplaced = [];
   // 실행마다 쌍 → { before: 발견[], after: 발견[] }
   const runs = [];
   for (let r = 1; r <= key.runs; r++) {
@@ -157,6 +173,10 @@ function score(dir) {
         continue;
       }
       for (const x of parseReport(fs.readFileSync(file, 'utf8'))) {
+        if (x.file !== f) {
+          misplaced.push(`${path.basename(file)}의 ${x.file}:${x.line}`);
+          continue;
+        }
         // 문단 i는 2i+1번째 줄이다. 짝수 줄(문단 사이 빈 줄)은 앞 문단으로 본다
         const slot = key.files[x.file]?.[Math.floor((x.line - 1) / 2)];
         const codes = x.codes.filter((c) => !WHOLE.has(c));
@@ -170,6 +190,8 @@ function score(dir) {
     process.exitCode = 2;
     return;
   }
+
+  if (misplaced.length) console.log(`! 다른 글의 위치라서 세지 않은 발견 ${misplaced.length}건: ${misplaced.join(', ')}`);
 
   const has = (list, codes) => list.some((x) => x.codes.some((c) => codes.includes(c)));
   const per = runs.map((found) => ({
