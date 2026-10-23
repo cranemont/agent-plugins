@@ -71,7 +71,7 @@ scripts/                                   # repo maintenance (see below)
 - **internalize** — methodology grounded in the learning-science research cited in [references/research.md](plugins/thinking-tools/skills/internalize/references/research.md).
 - **appscript** — every reference doc cites its official Google documentation sources inline (`> 출처` blocks); maintained with the toolchain in `scripts/appscript-docs/`.
 - **plain-korean** — the rules and their evidence are kept apart. [references/research.md](plugins/writing/skills/plain-korean/references/research.md) records which style guide was followed where two disagree, and which popular "AI writing tells" were measured and deliberately not turned into rules.
-- **prose-check** — Korean rules adapt ASD-STE100 Issue 9 at about 80%, and English text follows STE as written. [references/research.md](plugins/writing/skills/prose-check/references/research.md) gives the source of each rule. The checker's tests and word-list measurements are in `scripts/prose-check/`.
+- **prose-check** — Korean rules adapt ASD-STE100 Issue 9 at about 80%, and English text follows STE as written. [references/research.md](plugins/writing/skills/prose-check/references/research.md) gives the source of each rule. The checker's tests and word-list measurements are in `scripts/prose-check/`. The repo-local skill `.claude/skills/prose-check-eval` measures the whole review, script and model, on the same edited sentence pairs.
 
 ## Maintenance
 

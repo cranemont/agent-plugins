@@ -331,6 +331,7 @@ grep -oE '(^|[^가-힣])장([은는이가을를의에도로와과만]|[^가-힣]
    - 전에 찾던 쌍을 놓치거나, 고친 뒤 문장에 새 후보가 나오면 실패한다(종료 코드 1). 형태소 분석이 실패해 형태소 모드를 검증하지 못해도 실패한다.
    - `--human`은 사람 글 말뭉치의 1,000어절당 후보 수도 측정한다. 후보가 늘어난 규칙은 2번으로 정밀도를 판정한다.
    - 결과가 나아졌고 정밀도도 확인했으면 `--save`로 기준을 갱신한다.
+4. **모델 판정 측정.** `judge.mjs`와 저장소 스킬 `prose-check-eval`이 같은 교정 쌍으로 스킬 전체(검사 스크립트와 Step 2 판정)를 측정한다. 하위 에이전트가 정답 없이 글을 검토하고, `judge.mjs`가 보고서를 채점한다. 모델 결과는 실행마다 달라서 실패로 끝내지 않는다. SKILL.md나 이 파일의 설명을 고친 뒤, 또는 스킬을 사용하는 모델이 바뀐 뒤에 돌린다.
 
 관리 도구는 설치한 스킬에 들어가지 않는다. 원본 저장소의 `scripts/prose-check/`에 있고, 저장소 최상위에서 실행한다.
 
@@ -342,5 +343,6 @@ node scripts/prose-check/precision.mjs 판정.tsv                               
 node scripts/prose-check/test.mjs                                                # 규칙을 고친 뒤 회귀 시험
 node scripts/prose-check/pairs.mjs --human                                       # 탐지율·고친 뒤 후보·사람 글 후보를 기준과 비교
 node scripts/prose-check/pairs.mjs --save --human                                # 나아진 결과를 새 기준으로 저장
+node scripts/prose-check/judge.mjs --score <폴더> --model=<모델>                   # prose-check-eval 스킬이 모은 보고서 채점
 ```
 
