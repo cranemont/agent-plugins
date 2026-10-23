@@ -167,6 +167,8 @@ The maintenance tools and their data are not part of the installed skill, so an 
 - `baseline.mjs`: rebuilds the frequency tables, counts only. The core table `baseline.tsv` is committed and holds what the default run reads. The full table, with nouns and morpheme pairs, goes to the data folder.
 - `check.mjs --tsv=<file>` and `precision.mjs`: label candidates `y`/`n`, then measure precision per rule. Demote or remove a rule with more than 10% false positives.
 - `test.mjs` and `check.test.mjs`: rule fixtures in both Kiwi and regex modes, and script behaviour. Run them after every rule change.
+- `pairs.mjs`: the verification loop. It runs the check on sentence pairs that the National Institute of Korean Language edited (`pairs/style.tsv`). It reports how many original sentences get a candidate for the expected rule, and which candidates remain on the edited sentences. Then it compares the result with the saved reference (`pairs/results.json`). It fails when a rule change misses a pair that it found before, or adds a candidate to an edited sentence. `--human` also measures candidates per 1,000 어절 in the human baseline. Run it with `test.mjs` after every rule change. Save a new reference with `--save` when the result improves and the precision of the new candidates is checked.
+- `vocab.mjs`: measures whether the institute's basic vocabulary grades separate hard words (STE 1.9). The result is in `references/research.md` §9. It is not a rule.
 - `calibrate.mjs`: re-measures the 12 / 15 어절 guide (`references/calibration.md`).
 
 ## Rules
@@ -181,4 +183,4 @@ The maintenance tools and their data are not part of the installed skill, so an 
 - `references/rules.md`: the 53 STE rules, each with its Korean application and tag. It also holds the Korean-only rules K1–K12, the definition of plain written Korean, and severities. It also holds the length guides, strictness by text type, rejected alternatives, examples, and pass criteria.
 - `references/korean-patterns.md`: the four questions, three causes, calque and vague-verb tables, false positives, how to fix without breaking particles.
 - `references/calibration.md`: the measurement behind 12 / 15 어절 (ratio 0.62 on 43 official STE examples), its limits, and how to redo it in the source repository.
-- `references/research.md`: where each rule came from, STE sources, effect studies, critiques, LLM and STE. §8 holds the evidence for K9–K12.
+- `references/research.md`: where each rule came from, STE sources, effect studies, critiques, LLM and STE. §8 holds the evidence for K9–K12. §9 compares this skill with existing Korean checkers and research, and records the detection rate on edited sentence pairs.
