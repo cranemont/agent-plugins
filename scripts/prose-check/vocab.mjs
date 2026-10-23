@@ -8,7 +8,7 @@
  *
  *   node scripts/prose-check/vocab.mjs --build [목록.xlsx]   목록을 내려받거나(경로가 없을 때) 읽어서 데이터 폴더에 저장한다
  *   node scripts/prose-check/vocab.mjs                       낱말 쌍(pairs/words.tsv)과 문장 쌍(pairs/style.tsv)을 측정한다
- *   node scripts/prose-check/vocab.mjs --texts               사람 글 말뭉치와 Claude 응답에서 목록 밖 낱말의 비율도 측정한다
+ *   node scripts/prose-check/vocab.mjs --texts               사람 글 말뭉치와 Claude 응답에서 경계 등급 밖 낱말(더 높은 등급과 목록 밖 낱말)의 비율도 측정한다
  *   node scripts/prose-check/vocab.mjs --grade=3             쉬운 낱말의 경계 등급 (기본 3)
  */
 import fs from 'node:fs';
