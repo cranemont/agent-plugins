@@ -31,6 +31,8 @@ Read the user's certainty from the answer itself: how firmly they state it, how 
 
 Each question asks about one mechanism, one transition, or one decision. It names the start and end point, or the case to predict, and the shape of the answer: a name, two or three steps, or one reason. A longer flow becomes a series of such questions.
 
+Follow the flow from its entry point. When the scope is a flow with several stages, the first question asks for those stages. Its verdict sets a stage map, one row per stage with the actor and the result, and each later question points at one row. A question builds only on terms and steps that an earlier verdict or a one-line explanation has set up.
+
 Rotate question types; each targets a different layer of the mental model:
 
 | Type | Example shape | Targets |
