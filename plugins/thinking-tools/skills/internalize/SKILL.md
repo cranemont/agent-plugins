@@ -27,14 +27,16 @@ Read the target code thoroughly before asking anything: trace data flows, entry 
 
 Ask exactly one question, wait for the answer, then give the verdict. Never batch questions.
 
-For each question, before revealing anything, ask the user to tag their answer with a confidence level: **certain / roughly / guessing**. Miscalibration (confidently wrong, or right but guessing) is the most valuable signal this skill produces — call it out explicitly when it appears.
+Read the user's certainty from the answer itself: how firmly they state it, how precise it is, and whether they give a reason. When the answer leaves it unclear, ask one short follow-up before the verdict, such as "Why?" or one concrete case. Miscalibration (sure but wrong, or hedged but right) is the most valuable signal this skill produces. Call it out when you see it.
+
+Each question asks about one mechanism, one transition, or one decision. It names the start and end point, or the case to predict, and the shape of the answer: a name, two or three steps, or one reason. A longer flow becomes a series of such questions.
 
 Rotate question types; each targets a different layer of the mental model:
 
 | Type | Example shape | Targets |
 |---|---|---|
 | Prediction | "If X is called with Y, what happens?" | Behavior |
-| Causal explanation | "Walk me through how a request flows from A to B." | Structure |
+| Causal explanation | "After A calls B, which component writes C, and when?" | Structure |
 | Design rationale | "Why is this a queue and not a direct call? What breaks otherwise?" | Theory — the *why* behind the architecture |
 | Teaching frame | "A new teammate asks what this module is for. Your one-paragraph answer?" | Core-value compression |
 | Boundary probe | "What happens when this input is empty / duplicated / fails midway?" | Edge understanding |
@@ -43,7 +45,7 @@ After each answer, verdict in three parts, briefly:
 
 1. **정확 / 부분 / 오해** — against the actual code, quoting the specific lines that decide it (`path:line`)
 2. Correct only the gap — do not re-explain what the user already got right
-3. If confidence and correctness diverged, say so ("확신했지만 실제로는…")
+3. If the answer sounded sure but was wrong, or hedged but right, say so ("단정했지만 실제로는…")
 
 ### 3. Calibrate difficulty
 
