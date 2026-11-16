@@ -1,6 +1,6 @@
 {
   "name": "adr",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Architecture Decision Records: record hard-to-reverse decisions as immutable files, derive their status, keep an index, and consult them before architectural work.",
   "author": {
     "name": "cranemont"

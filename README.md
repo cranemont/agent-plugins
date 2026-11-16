@@ -9,7 +9,7 @@ The skills ship as small plugins, one per function. Install only the plugins you
 <!-- BEGIN:catalog (auto-generated from plugins/*/skills/*/SKILL.md — edit descriptions there, then run scripts/gen-readme.sh) -->
 | Plugin | Skill | Description |
 |---|---|---|
-| [adr](plugins/adr) | [adr](plugins/adr/skills/adr/SKILL.md) | Architecture Decision Record(ADR) 워크플로우 — 되돌리기 비싼 결정을 불변 파일로 기록하고(docs/adr/NNNN-slug.md, status 없이 superseded_by로 상태 파생), 자동 인덱스·supersede·작업 전 참조까지 하나의 캐논으로 관리한다. |
+| [adr](plugins/adr) | [adr](plugins/adr/skills/adr/SKILL.md) | 되돌리기 비싼 결정을 불변 파일로 기록하고 자동 인덱스·supersede·작업 전 참조를 캐논 하나로 정하는 Architecture Decision Record(ADR) 워크플로우(docs/adr/NNNN-slug.md, status 없이 superseded_by로 상태 파생). |
 | [appscript](plugins/appscript) | [appscript](plugins/appscript/skills/appscript/SKILL.md) | Google Apps Script(GAS, V8 런타임) 한국어 레퍼런스 — Sheets/Gmail/Drive/Calendar/Docs/Slides/Forms 자동화, 트리거, 웹앱(doGet/doPost), OAuth scope, quota, clasp/TypeScript, 매니페스트(appsscript.json), 6분 제한 회피 등 50여 개 문서를 라우팅 표로 필요한 부분만 읽어 답한다. |
 | [git-tools](plugins/git-tools) | [commit-semantic](plugins/git-tools/skills/commit-semantic/SKILL.md) | Analyze uncommitted changes and create semantic commits — group changes into meaningful units (feat/fix/refactor/docs/test/chore) and commit them in dependency order. |
 | [thinking-tools](plugins/thinking-tools) | [grilling](plugins/thinking-tools/skills/grilling/SKILL.md) | Grill the user relentlessly about a plan, decision, or idea. |
