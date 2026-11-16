@@ -59,7 +59,7 @@
       "name": "thinking-tools",
       "source": "./plugins/thinking-tools",
       "description": "Interactive sessions that test your thinking: grill a plan or decision before you act, and internalize a codebase through retrieval-practice quizzes.",
-      "version": "0.3.2",
+      "version": "0.4.0",
       "author": {
         "name": "cranemont"
       },

@@ -62,3 +62,39 @@
 ### 확신도 캘리브레이션
 - IOED 연구 및 METR 인식-실제 격차가 공통으로 가리키는 지점: 자기평가는 신뢰할 수 없고, 평가와 실제를 명시적으로 대조시켜야 교정된다.
 - **반영:** 확신도는 답의 단정·정밀도·근거로 읽고, 답으로 판단이 안 서면 꼬리 질문("왜요?" 또는 구체 사례) 하나로 확인한다. 확신-정답 불일치는 명시적으로 지적한다.
+
+## 3. 층을 오가는 질문의 근거
+
+조사일: 2026-11-16. 스킬은 불변식 하나를 목적, 코드, 상태, 실행 층으로 따라 내려갔다가 다시 올라온다. 이 설계의 근거를 정리한다.
+
+### 프로그램 이해 모델 — Pennington (1987), von Mayrhauser & Vans (1995)
+- https://www.cs.kent.edu/~jmaletic/cs69995-PC/papers/von_mayrhauser97.pdf
+- 개관: https://arxiv.org/pdf/2310.11301
+- Pennington은 이해를 두 모델로 나눈다. 프로그램 모델은 제어 흐름이고, 상황 모델은 데이터 흐름과 목적이다.
+- von Mayrhauser와 Vans의 통합 모델은 도메인 층을 더한다. 숙련자는 한 방향으로 읽지 않고, 단서가 나올 때마다 층을 바꾼다.
+- **반영:** 네 층과 스레드. 질문 하나는 한 층만 묻고, 다음 질문은 이웃한 층으로 옮긴다.
+
+### 새는 추상화의 법칙 — Spolsky (2002)
+- https://www.joelonsoftware.com/2002/11/11/the-law-of-leaky-abstractions/
+- 사소하지 않은 추상화는 모두 샌다. 추상화가 새면 아래 층을 아는 사람만 원인을 설명한다.
+- **반영:** "층 연결" 질문 유형. 코드 한 줄이 어떤 쿼리와 락이 되는지 묻는다.
+
+### Google eng-practices — What to look for in a code review
+- https://google.github.io/eng-practices/review/reviewer/looking-for.html
+- 리뷰에서 가장 중요한 것은 전체 설계다. 리뷰어는 엣지 케이스와 동시성 문제도 함께 찾는다.
+
+### 실무 리뷰 글 (블로그, 근거 수준 낮음)
+- https://www.devx.com/technology/why-race-conditions-pass-reviews-but-fail-at-scale/
+- https://blog.devgenius.io/i-reviewed-340-spring-boot-prs-these-8-patterns-always-break-in-production-73fefc2c4a03
+- https://ai.plainenglish.io/your-ai-generated-code-works-until-production-17-failure-modes-senior-engineers-need-to-catch-2a84a8dfef01
+- 개인 경험을 정리한 글이고 수치는 검증되지 않았다. 다만 주장은 서로 일치한다.
+  - 리뷰는 나쁜 코드를 잘 찾고 나쁜 타이밍은 놓친다. 그래서 불변식을 기준으로 읽는다.
+  - 값을 읽고 메모리에서 검사한 뒤 다시 저장하는 코드는 동시 요청에서 깨진다.
+  - 트랜잭션 안에서 외부 서비스를 호출하면 두 쪽의 상태가 어긋난다.
+  - 캐시는 무효화 시점과 부하 중 캐시 미스를 확인한다.
+  - 의존 대상마다 "느리면, 죽으면, 틀리면"을 묻는다.
+- **반영:** 스레드의 출발점을 불변식으로 정했다. "동시 실행", "상태 위치", "부분 실패", "부하" 질문 유형도 여기서 나왔다.
+
+### 한계
+- "시니어 개발자는 층을 오가며 리뷰한다"를 직접 측정한 연구는 찾지 못했다. 위 모델과 실무 글에서 추론한 설계다.
+- 질문 유형을 점검표처럼 돌리면 다시 표면만 묻는다. 그래서 스킬은 답안에 근거가 있는 층만 묻는다.
